@@ -1,0 +1,6 @@
+{
+	"prefix": "!",
+	"token": "DISCORD_BOT_TOKEN",
+    "cse_id": "CSE_ID",
+    "api_key": "API_KEY"
+}
