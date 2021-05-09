@@ -8,13 +8,11 @@ module.exports = {
             await sendTimetable(message).catch(console.error);
             return;
         } 
-        console.log(args[0]);
         switch(args[0]) {
             case 'refresh':
                 message.channel.send('You want to refresh the timetable? Ok then');
                 await refreshTimetable();
                 message.channel.send('Timetable refreshed!');
-                // await sendTimetable(message);
                 break;
             case 'saya':
             case 'sayacchi':
