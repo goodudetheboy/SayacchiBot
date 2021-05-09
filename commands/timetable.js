@@ -24,7 +24,10 @@ const MessageEmbed = Discord.MessageEmbed;
 
 async function getTimetable() {
     try {
-        const browser = await puppeteer.launch({headless: true});
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
         const [page] = await browser.pages();
     
         await page.goto('https://weathernews.jp/s/solive24/timetable.html', { waitUntil: 'networkidle0' });
