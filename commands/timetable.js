@@ -42,6 +42,7 @@ const Discord = require('discord.js');
 const puppeteer = require('puppeteer');
 const MessageEmbed = Discord.MessageEmbed;
 var timetable;
+refreshTimetable();
 
 // Retrieve WNI timetable data from https://weathernews.jp/s/solive24/timetable.html
 async function getTimetable() {
