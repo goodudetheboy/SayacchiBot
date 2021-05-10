@@ -1,14 +1,13 @@
 const Discord = require('discord.js');
 const { prefix, token, cse_id, api_key } = require('./config.json');
 const fs = require('fs');
-const GoogleImage = require('google-images');
+// const GoogleImage = require('google-images');
 const Error = require('./error.js');
-const Utils = require('./utils.js');
+// const Utils = require('./utils.js');
 
+// const google = new GoogleImage(cse_id, api_key);
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-// const google = new GoogleImage(cse_id, api_key);
-
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {

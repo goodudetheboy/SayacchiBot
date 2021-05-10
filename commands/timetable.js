@@ -1,6 +1,10 @@
+const Discord = require('discord.js');
+const puppeteer = require('puppeteer');
+const MessageEmbed = Discord.MessageEmbed;
+
 module.exports = {
     name: 'timetable',
-    description: 'Get Weather News Channel timetable from https://weathernews.jp/s/solive24/timetable.html',
+    description: 'Get Weather News Channel timetable from https://weathernews.jp/s/solive24/timetable.html.',
     async execute(message, args) {
         if(args.length == 0){
             message.channel.send('I\'m getting the timetable, please wait for me ok <3');
@@ -28,7 +32,7 @@ module.exports = {
                     message.channel.send('Too bad I\'ll not be live in my current timetable,but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!');
                     return;
                 }
-                message.channel.send('Here\'s when I will live:');
+                message.channel.send('Here\'s when I will be live:');
                 for(var i=0; i < timeslots.length; i++) {
                     sendTimeslot(message, timeslots[i]);
                 }
@@ -37,12 +41,11 @@ module.exports = {
         }
     }
 }
-
-const Discord = require('discord.js');
-const puppeteer = require('puppeteer');
-const MessageEmbed = Discord.MessageEmbed;
+/////////////////////////////MAIN FUNCTION/////////////////////////////
 var timetable;
 refreshTimetable();
+
+/////////////////////////////FUNCTIONS BELOW/////////////////////////////
 
 // Retrieve WNI timetable data from https://weathernews.jp/s/solive24/timetable.html
 async function getTimetable() {
