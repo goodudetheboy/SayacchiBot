@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const { prefix, token, cse_id, api_key } = require('./config.json');
 const fs = require('fs');
 // const GoogleImage = require('google-images');
-const Error = require('./error.js');
+const Error = require('./error/error.js');
 // const Utils = require('./utils.js');
 
 // const google = new GoogleImage(cse_id, api_key);
@@ -40,7 +40,6 @@ client.on('message', message => {
         console.error(error);
         Error.sendError(message);
     }
-
 });
 
 client.login(token);  
