@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const puppeteer = require('puppeteer');
 const MessageEmbed = Discord.MessageEmbed;
+const Error = require('../error/error.js');
 
 module.exports = {
     name: 'timetable',
@@ -12,6 +13,7 @@ module.exports = {
             await sendTimetable(message).catch(console.error);
             return;
         } 
+            // TODO: Check timetable of other casters too
         switch(args[0]) {
             case 'refresh':
                 message.channel.send('You want to refresh the timetable? Ok then');
@@ -23,10 +25,14 @@ module.exports = {
                 // TODO: check if timetable is too old by getting time from somewhere
                 message.channel.send('You want to know what time I\'m live?');
                 var timeslots = await checkLive('hiyama');
+                var errorStopper = 0;
                 while(typeof timeslots === 'undefined') {
                     message.channel.send('Too bad there\'s nothing on my current timetable, I\'ll refresh my timetable for you!');
                     await refreshTimetable();
                     timeslots = await checkLive('hiyama');
+                    // In case of infinite while loop, return and send error code 1
+                    if(errorStopper == 10) return Error.sendErrorCode(message, 1);
+                    errorStopper++;
                 }
                 if(timeslots.length == 0) {
                     message.channel.send('Too bad I\'ll not be live in my current timetable,but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!');
@@ -37,7 +43,7 @@ module.exports = {
                     sendTimeslot(message, timeslots[i]);
                 }
                 break;
-            case 'check':
+            case 'today': // TODO:
         }
     }
 }
@@ -75,21 +81,37 @@ async function getTimetable() {
         .catch(console.error);
         console.log('WNI timetable data retrieved successfully');
         await browser.close();
-        return data;
+
+        var dataMap = new Map();
+        // Remapping this because can't return map from page.evaluate()
+        for(var i = 0; i < data.length; i++) {
+            dataMap.set(i, {
+                time: data[i][0],
+                title: data[i][1],
+                casterImg: data[i][2],
+                casterName: data[i][3] 
+            })
+        }
+        return dataMap;
     } catch (err) {
         console.error(err);
     }
 }
 
-// Send WNI timetable data from storage, if not then refresh
+/*  
+    Send WNI timetable data from storage, if nothing in storage then refresh
+    limit = 0 => send all
+          = 1 => send today's
+          = 2 => send tomorrow's
+ */
 async function sendTimetable(message) {
     message.channel.send("Here's your timetable!");
     if(typeof timetable === 'undefined') {
         await refreshTimetable();
     }
     // 1 = time, 2 = title, 3 = img_caster
-    for(var i = 0; i < timetable.length; i++) {
-        sendTimeslot(message, timetable[i]);
+    for(var i = 0; i < timetable.size; i++) {
+        sendTimeslot(message, timetable.get(i));
     }
     message.channel.send('That\'s all!');
     message.channel.send('それだけです！');
@@ -106,8 +128,8 @@ async function refreshTimetable() {
 function sendTimeslot(message, timeslot) {
     var embed = new MessageEmbed()
         .setColor('#0099ff')    
-        .setTitle(timeslot[0])
-        .setAuthor(timeslot[1], 'https://weathernews.jp/' + timeslot[2]);
+        .setTitle(timeslot.time)
+        .setAuthor(timeslot.title, 'https://weathernews.jp/' + timeslot.casterImg);
     message.channel.send(embed);
 }
 
@@ -117,13 +139,13 @@ function sendTimeslot(message, timeslot) {
                     0 : no time slot in current timetable,
                     1 : input caster's name has time slot
  */
-function checkLive(name) {
+function checkLive(casterName) {
     if(typeof timetable === 'undefined') return undefined; 
     var result = [];
     var k = 0;
     for(var i=0; i < timetable.length; i++) {
-        let timeslot = timetable[i];
-        if(name.localeCompare(timeslot[3]) == 0) {
+        let timeslot = timetable.get(i);
+        if(casterName.localeCompare(timeslot.casterName) == 0) {
             result[k] = timeslot;
             k++;
         }
