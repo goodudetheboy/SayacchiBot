@@ -10,7 +10,7 @@ module.exports = {
         if(args.length == 0){
             message.channel.send('I\'m getting the timetable, please wait for me ok <3');
             message.channel.send('番組表？ちょっと待ってね ❤');
-            await sendTimetable(message).catch(console.error);
+            await sendTimetable(message, 0).catch(console.error);
             return;
         } 
             // TODO: Check timetable of other casters too
@@ -44,6 +44,9 @@ module.exports = {
                 }
                 break;
             case 'today': // TODO:
+                message.channel.send('You want to know the timetable for today?');
+                sendTimetable(message, 1);
+                break;
         }
     }
 }
@@ -83,7 +86,7 @@ async function getTimetable() {
         await browser.close();
 
         var dataMap = new Map();
-        // Remapping this because can't return map from page.evaluate()
+        // Remapping this because can't return Map from page.evaluate()
         for(var i = 0; i < data.length; i++) {
             dataMap.set(i, {
                 time: data[i][0],
@@ -102,16 +105,24 @@ async function getTimetable() {
     Send WNI timetable data from storage, if nothing in storage then refresh
     limit = 0 => send all
           = 1 => send today's
-          = 2 => send tomorrow's
+          = 2 => send tomorrow's (not implemented yet)
  */
-async function sendTimetable(message) {
+async function sendTimetable(message, limit) {
     message.channel.send("Here's your timetable!");
     if(typeof timetable === 'undefined') {
         await refreshTimetable();
     }
     // 1 = time, 2 = title, 3 = img_caster
     for(var i = 0; i < timetable.size; i++) {
-        sendTimeslot(message, timetable.get(i));
+        var timeslot = timetable.get(i);
+        if(limit == 1 && i != 0) {
+            // TODO: refactor this to be more flexible, maybe create a filter()?
+            // check for today's timeslot by comparing with previous time slot
+            if(timeslot.time.localeCompare(timetable.get(i-1).time) < 0) {
+                break;
+            }
+        }
+        sendTimeslot(message, timeslot);
     }
     message.channel.send('That\'s all!');
     message.channel.send('それだけです！');
@@ -143,7 +154,7 @@ function checkLive(casterName) {
     if(typeof timetable === 'undefined') return undefined; 
     var result = [];
     var k = 0;
-    for(var i=0; i < timetable.length; i++) {
+    for(var i=0; i < timetable.size; i++) {
         let timeslot = timetable.get(i);
         if(casterName.localeCompare(timeslot.casterName) == 0) {
             result[k] = timeslot;
