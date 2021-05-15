@@ -1,11 +1,12 @@
 const Discord = require('discord.js');
 const Scraper = require('images-scraper');
 const MessageEmbed = Discord.MessageEmbed;
-const Utils = require('../utils.js');
+const Utils = require('../../utils.js');
 
 module.exports = {
     name: 'saya',
     description: 'Get random image of Sayacchi from Google Images.',
+    args: false,
     execute(message, args) {
         // TODO: add remove element and when currentI maxed out
         console.log(`Requesting Sayacchi image from storage by ${message.author.id} - ${message.author.username}`);

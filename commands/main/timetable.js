@@ -1,11 +1,13 @@
 const Discord = require('discord.js');
 const puppeteer = require('puppeteer');
 const MessageEmbed = Discord.MessageEmbed;
-const Error = require('../error/error.js');
+const Error = require('../../error/error.js')
 
 module.exports = {
     name: 'timetable',
     description: 'Get Weather News Channel timetable from https://weathernews.jp/s/solive24/timetable.html.',
+    args: false,
+    aliases: [ 'schedule' ],
     async execute(message, args) {
         if(args.length == 0){
             message.channel.send('I\'m getting the timetable, please wait for me ok <3');
