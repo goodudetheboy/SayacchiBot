@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "node test.js",
+    "test": "node ./testing/test.js",
     "start": "node main.js"
   },
   "author": "goodudetheboy",
