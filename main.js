@@ -23,7 +23,7 @@ client.once('ready', () => {
     client.user.setPresence({
         activity: {
             name: '@ home',
-            type: 'STREAMING'
+            type: 'PLAYING'
         },
         status: 'online' })
     .then(console.log('Bot activity set successfully'))

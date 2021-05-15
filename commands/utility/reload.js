@@ -24,7 +24,7 @@ module.exports = {
             console.log(`Command \`${newCommand.name}\` was reloaded!`);
         } catch (error) {
             console.error(error);
-            console.log(`There was an error while reloading a command \`${command.name}\`:\n\`${error.message}\``);
+            console.log(`Error reloading a command \`${command.name}\`:\n\`${error.message}\``);
         }
 	},
 };
