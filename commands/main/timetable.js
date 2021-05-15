@@ -9,36 +9,34 @@ module.exports = {
     args: false,
     aliases: [ 'schedule' ],
     async execute(message, args) {
-        if(args.length == 0){
+        if(!args.length) {
             message.channel.send('I\'m getting the timetable, please wait for me ok <3');
             message.channel.send('番組表？ちょっと待ってね ❤');
-            await sendTimetable(message, 0).catch(console.error);
-            return;
+            return await sendTimetable(message, 0).catch(console.error);
         } 
             // TODO: Check timetable of other casters too
+        var timetable = getStoredTimetable();
         switch(args[0]) {
             case 'refresh':
                 message.channel.send('You want to refresh the timetable? Ok then');
                 await refreshTimetable();
-                message.channel.send('Timetable refreshed!');
-                break;
+                return message.channel.send('Timetable refreshed!');
             case 'saya':
             case 'sayacchi':
                 // TODO: check if timetable is too old by getting time from somewhere
                 message.channel.send('You want to know what time I\'m live?');
-                var timeslots = await checkLive('hiyama');
+                var timeslots = await checkLiveInTimetable('hiyama', timetable);
                 var errorStopper = 0;
                 while(typeof timeslots === 'undefined') {
                     message.channel.send('Too bad there\'s nothing on my current timetable, I\'ll refresh my timetable for you!');
                     await refreshTimetable();
-                    timeslots = await checkLive('hiyama');
+                    timeslots = await checkLiveInTimetable('hiyama', timetable);
                     // In case of infinite while loop, return and send error code 1
                     if(errorStopper == 10) return Error.sendErrorCode(message, 1);
                     errorStopper++;
                 }
                 if(timeslots.length == 0) {
-                    message.channel.send('Too bad I\'ll not be live in my current timetable,but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!');
-                    return;
+                   return message.channel.send('Too bad I\'ll not be live in my current timetable, but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!');
                 }
                 message.channel.send('Here\'s when I will be live:');
                 for(var i=0; i < timeslots.length; i++) {
@@ -47,12 +45,18 @@ module.exports = {
                 break;
             case 'today': // TODO:
                 message.channel.send('You want to know the timetable for today?');
-                sendTimetable(message, 1);
-                break;
+                return sendTimetable(message, 1);
             case 'tomorrow': // TODO:
                 message.channel.send('You want to know the timetable for tomorrow?');
-                sendTimetable(message, 2);
-                break;
+                return sendTimetable(message, 2);
+            case 'live':
+                // TODO: check live time of other caster too
+                // if(typeof args[1] === 'undefined') return message.channel.send('Please provide a caster\'s name >.<');
+                if(checkLiveWithCurrentTime('hiyama')) {
+                    return message.channel.send(`Yes! I'm currently live now!`);
+                } else {
+                    return message.channel.send(`Oopsie! Looks like I'm not live now! Check back later!`);
+                }
         }
     }
 }
@@ -145,11 +149,11 @@ async function refreshTimetable() {
 // Split timetable in storage to today and tomorrow
 async function splitTimetable() {
     console.log('Splitting timetable');
+    
     var todayI = 0;
     var tomorrowI = 0;
     this.todayTimetable = new Map();
     this.tmrTimetable = new Map();
-
     for(var i=0; i < this.timetable.size; i++) {
         var timeslot = this.timetable.get(i);
         // check for today's timeslot by comparing with previous time slot
@@ -159,14 +163,10 @@ async function splitTimetable() {
         }
         this.todayTimetable.set(i, timeslot);
     }
-
-
     for(var k=0; tomorrowI < this.timetable.size; k++) {
         this.tmrTimetable.set(k, this.timetable.get(tomorrowI)); 
         tomorrowI++;
     }
-
-    console.log(this.tmrTimetable);
 
     console.log('Timetable succesfully split');
 }
@@ -188,16 +188,15 @@ function sendTimeslot(message, timeslot) {
 
 /* 
     Check if input caster name has live time slots in timetable in storage
-    return code:    -1: no timetable in storage,
-                    0 : no time slot in current timetable,
-                    1 : input caster's name has time slot
+    return array of timeslot for caster if input caster name is live,
+    undefined else
  */
-function checkLive(casterName) {
-    if(typeof this.timetable === 'undefined') return undefined; 
+function checkLiveInTimetable(casterName, timetable) {
+    if(typeof timetable === 'undefined') return undefined; 
     var result = [];
     var k = 0;
-    for(var i=0; i < this.timetable.size; i++) {
-        let timeslot = this.timetable.get(i);
+    for(var i=0; i < timetable.size; i++) {
+        let timeslot = timetable.get(i);
         if(casterName.localeCompare(timeslot.casterName) == 0) {
             result[k] = timeslot;
             k++;
@@ -206,9 +205,17 @@ function checkLive(casterName) {
     return result;
 }
 
+/* 
+    Check if input caster name is currently live in today's timetable
+ */
 function checkLiveWithCurrentTime(casterName) {
-    var timeslots = checkLive(casterName);
-
+    var timeslots = checkLiveInTimetable(casterName, this.todayTimetable);
+    if(timeslots.length == 0) {
+        return false;
+    }
+    var liveHour = parseInt(timeslots[0].time.substring(0, 2), 10);
+    var currentHour = getCurrentTimeFromTimezone('+9').getHours();
+    return (currentHour >= liveHour && currentHour < liveHour+3);
 }
 
 // Get time of input timezone from UTC
@@ -218,4 +225,8 @@ function getCurrentTimeFromTimezone(timezone) {
     var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
     var nd = new Date(utc + (3600000*timezone));
     return nd;
+}
+
+function getStoredTimetable() {
+    return this.timetable;
 }
