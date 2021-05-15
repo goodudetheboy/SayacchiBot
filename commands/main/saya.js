@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const Scraper = require('images-scraper');
 const MessageEmbed = Discord.MessageEmbed;
-const Utils = require('../../utils.js');
+const Utils = require('../../utils/utils');
 
 module.exports = {
     name: 'saya',

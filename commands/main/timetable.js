@@ -49,12 +49,20 @@ module.exports = {
                 message.channel.send('You want to know the timetable for today?');
                 sendTimetable(message, 1);
                 break;
+            case 'tomorrow': // TODO:
+                message.channel.send('You want to know the timetable for tomorrow?');
+                sendTimetable(message, 2);
+                break;
         }
     }
 }
 /////////////////////////////MAIN FUNCTION/////////////////////////////
 var timetable;
-refreshTimetable();
+var todayTimetable;
+var tmrTimetable;
+refreshAndSplitTimetable();
+
+
 
 /////////////////////////////FUNCTIONS BELOW/////////////////////////////
 
@@ -105,27 +113,24 @@ async function getTimetable() {
 
 /*  
     Send WNI timetable data from storage, if nothing in storage then refresh
-    limit = 0 => send all
-          = 1 => send today's
-          = 2 => send tomorrow's (not implemented yet)
+    limit:  0 => send all
+            1 => send today's
+            2 => send tomorrow's (not implemented yet)
  */
 async function sendTimetable(message, limit) {
     message.channel.send("Here's your timetable!");
-    if(typeof timetable === 'undefined') {
-        await refreshTimetable();
+
+    // TODO: put a more robust try/catch here
+    var timetableToSend = (limit == 0) ? this.timetable : ((limit == 1) ? this.todayTimetable : this.tmrTimetable);
+    if(typeof timetableToSend === 'undefined') {
+        await refreshAndSplitTimetable();
     }
-    // 1 = time, 2 = title, 3 = img_caster
-    for(var i = 0; i < timetable.size; i++) {
-        var timeslot = timetable.get(i);
-        if(limit == 1 && i != 0) {
-            // TODO: refactor this to be more flexible, maybe create a filter()?
-            // check for today's timeslot by comparing with previous time slot
-            if(timeslot.time.localeCompare(timetable.get(i-1).time) < 0) {
-                break;
-            }
-        }
+
+    for(var i = 0; i < timetableToSend.size; i++) {
+        var timeslot = timetableToSend.get(i);
         sendTimeslot(message, timeslot);
     }
+
     message.channel.send('That\'s all!');
     message.channel.send('それだけです！');
 }
@@ -133,8 +138,43 @@ async function sendTimetable(message, limit) {
 // Refresh WNI timetable in storage
 async function refreshTimetable() {
     console.log('Refreshing timetable');
-    timetable = await getTimetable();
+    this.timetable = await getTimetable();
     console.log('Timetable successfully refreshed');
+}
+
+// Split timetable in storage to today and tomorrow
+async function splitTimetable() {
+    console.log('Splitting timetable');
+    var todayI = 0;
+    var tomorrowI = 0;
+    this.todayTimetable = new Map();
+    this.tmrTimetable = new Map();
+
+    for(var i=0; i < this.timetable.size; i++) {
+        var timeslot = this.timetable.get(i);
+        // check for today's timeslot by comparing with previous time slot
+        if(i != 0 && timeslot.time.localeCompare(this.timetable.get(i-1).time) < 0) {
+            tomorrowI = i;
+            break;
+        }
+        this.todayTimetable.set(i, timeslot);
+    }
+
+
+    for(var k=0; tomorrowI < this.timetable.size; k++) {
+        this.tmrTimetable.set(k, this.timetable.get(tomorrowI)); 
+        tomorrowI++;
+    }
+
+    console.log(this.tmrTimetable);
+
+    console.log('Timetable succesfully split');
+}
+
+// Refresh and split timetable
+async function refreshAndSplitTimetable() {
+    await refreshTimetable();
+    await splitTimetable();
 }
 
 // Create and send a MessageEmbed from input time slot data
@@ -153,15 +193,29 @@ function sendTimeslot(message, timeslot) {
                     1 : input caster's name has time slot
  */
 function checkLive(casterName) {
-    if(typeof timetable === 'undefined') return undefined; 
+    if(typeof this.timetable === 'undefined') return undefined; 
     var result = [];
     var k = 0;
-    for(var i=0; i < timetable.size; i++) {
-        let timeslot = timetable.get(i);
+    for(var i=0; i < this.timetable.size; i++) {
+        let timeslot = this.timetable.get(i);
         if(casterName.localeCompare(timeslot.casterName) == 0) {
             result[k] = timeslot;
             k++;
         }
     }
     return result;
+}
+
+function checkLiveWithCurrentTime(casterName) {
+    var timeslots = checkLive(casterName);
+
+}
+
+// Get time of input timezone from UTC
+// JST UTC+9
+function getCurrentTimeFromTimezone(timezone) {
+    var d = new Date();
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    var nd = new Date(utc + (3600000*timezone));
+    return nd;
 }
