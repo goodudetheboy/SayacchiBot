@@ -5,7 +5,7 @@ const Error = require('../../error/error.js')
 
 module.exports = {
     name: 'timetable',
-    description: 'Get Weather News Channel timetable from https://weathernews.jp/s/solive24/timetable.html.',
+    description: 'Get Weather News Channel timetable from https://weathernews.jp/s/solive24/timetable.html. Args: `refresh` to refresh timetable, `saya` to get my live time today, `today` to get my timetable for today, `tomorrow` to get my timetable for tomorrow, `live` to check if I\'m live now.',
     args: false,
     aliases: [ 'schedule' ],
     async execute(message, args) {
@@ -19,7 +19,7 @@ module.exports = {
         switch(args[0]) {
             case 'refresh':
                 message.channel.send('You want to refresh the timetable? Ok then');
-                await refreshTimetable();
+                await refreshAndSplitTimetable();
                 return message.channel.send('Timetable refreshed!');
             case 'saya':
             case 'sayacchi':
