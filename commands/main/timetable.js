@@ -90,7 +90,7 @@ async function getTimetable() {
                 entry[0] = content[i].getElementsByClassName('time')[0].innerHTML;
                 entry[1] = content[i].getElementsByClassName('title')[0].innerHTML;
                 entry[2] = content[i].getElementsByClassName('img_caster')[0].getAttribute('src');
-                entry[3] = entry[2].replace(/\/s\/topics\/img\/caster\/|2018|_m1|\.jpg/gm, '');
+                entry[3] = entry[2].replace(/\/s\/topics\/img\/caster\/|2018|_m1|_m2|\.jpg/gm, '');
                 timetable[i] = entry;
             }
             return timetable;
