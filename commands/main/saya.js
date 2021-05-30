@@ -10,7 +10,7 @@ module.exports = {
     async execute(message, args) {
         // TODO: add remove element and when currentI maxed out
         if(args.length == 0) {
-            console.log(`Requesting Sayacchi image from storage by ${message.author.id} - ${message.author.username}`);
+            console.log(`Requesting Sayacchi image from storage by ${ message.author.id } - ${ message.author.username }`);
             var image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
             while(!Utils.checkImageUrl(image.url)) {
                 image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
