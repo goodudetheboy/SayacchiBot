@@ -83,7 +83,7 @@ var tmrTimetable;
 /////////////////////////////FUNCTIONS BELOW/////////////////////////////
 
 // Retrieve WNI timetable data from https://weathernews.jp/s/solive24/timetable.html
-async function getTimetable() {
+async function retrieveTimetable() {
     try {
         const browser = await puppeteer.launch({
             headless: true,
@@ -154,7 +154,7 @@ async function sendTimetable(message, limit) {
 // Refresh WNI timetable in storage
 async function refreshTimetable() {
     console.log('Refreshing timetable');
-    this.timetable = await getTimetable();
+    this.timetable = await retrieveTimetable();
     console.log('Timetable successfully refreshed');
 }
 
