@@ -58,20 +58,32 @@ module.exports = {
                     return message.channel.send(`Oopsie! Looks like I'm not live now! Check back later!`);
                 }
         }
+    },
+    // Set interval to check live, input time is in HOUR
+    async checkLiveInRepeat(channel, casterName) {
+        // TODO: Currently this only supports 'saya', to be expanded later
+        console.log(`Checking ${ casterName }'s live status`);
+        if(typeof getStoredTimetable() === 'undefined') {
+            return console.log('Schedule not yet populated');
+        }
+        return (checkLiveWithCurrentTime(casterName)) ?
+            channel.send(`${ casterName } is live now!`) :
+            console.log(`${ casterName } is not live now`);
     }
 }
 /////////////////////////////MAIN FUNCTION/////////////////////////////
 var timetable;
 var todayTimetable;
 var tmrTimetable;
-refreshAndSplitTimetable();
-
-
+(async () => {
+    await refreshAndSplitTimetable();
+    // await checkLiveInRepeat('saya', 1000);
+})();
 
 /////////////////////////////FUNCTIONS BELOW/////////////////////////////
 
 // Retrieve WNI timetable data from https://weathernews.jp/s/solive24/timetable.html
-async function getTimetable() {
+async function retrieveTimetable() {
     try {
         const browser = await puppeteer.launch({
             headless: true,
@@ -142,7 +154,7 @@ async function sendTimetable(message, limit) {
 // Refresh WNI timetable in storage
 async function refreshTimetable() {
     console.log('Refreshing timetable');
-    this.timetable = await getTimetable();
+    this.timetable = await retrieveTimetable();
     console.log('Timetable successfully refreshed');
 }
 
@@ -218,6 +230,13 @@ function checkLiveWithCurrentTime(casterName) {
     return (currentHour >= liveHour && currentHour < liveHour+3);
 }
 
+// Set interval to check live, input time is in HOUR
+function checkLiveInRepeat(channel, casterName, timetInHour) {
+    return setInterval(function() {
+        
+    }, parseInt(timetInHour));
+}
+
 // Get time of input timezone from UTC
 // JST UTC+9
 function getCurrentTimeFromTimezone(timezone) {
@@ -230,3 +249,4 @@ function getCurrentTimeFromTimezone(timezone) {
 function getStoredTimetable() {
     return this.timetable;
 }
+
