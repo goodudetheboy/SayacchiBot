@@ -52,6 +52,6 @@ const google = new Scraper({
 /////////////////////////////FUNCTIONS BELOW/////////////////////////////
 async function refreshImageStorage() {
     console.log('Refreshing image storage');
-    imageStorage = await google.scrape("檜山沙耶WNI" + "", 150);
+    imageStorage = await google.scrape("檜山沙耶WNI", 150);
     console.log('Image storage refreshed');
 }
