@@ -35,7 +35,7 @@ client.once('ready', () => {
     const checkLiveChannel = client.channels.cache.get('839154353046290513');
     setInterval(function() { 
         timetableCommand.checkLiveInRepeat(checkLiveChannel, 'saya');
-    }, 1 * 60 * 60);
+    }, 1000 * 60 * 60);
 });
 
 client.on('message', message => {
