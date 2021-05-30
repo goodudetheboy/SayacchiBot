@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefix, token, cse_id, api_key } = require('./config.json');
+const { prefix, token, cse_id, api_key, test_channel_id } = require('./config.json');
 const fs = require('fs');
 // const GoogleImage = require('google-images');
 const Error = require('./error/error.js');
@@ -28,6 +28,14 @@ client.once('ready', () => {
         status: 'online' })
     .then(console.log('Bot activity set successfully'))
     .catch(console.error);
+
+    // TODO: below is interval action, consider refactoring it into a different file, say 'repeat.js'
+    const timetableCommand = client.commands.get('timetable');
+    // const checkLiveChannel = client.channels.cache.get(test_channel_id);
+    const checkLiveChannel = client.channels.cache.get('839154353046290513');
+    setInterval(function() { 
+        timetableCommand.checkLiveInRepeat(checkLiveChannel, 'saya');
+    }, 1 * 60 * 60);
 });
 
 client.on('message', message => {
