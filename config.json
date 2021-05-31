@@ -2,5 +2,7 @@
 	"prefix": "!",
 	"token": "DISCORD_BOT_TOKEN",
     "cse_id": "CSE_ID",
-    "api_key": "API_KEY"
+    "api_key": "API_KEY",
+    "test_channel_id": "796257585078337559",
+    "browser_path": "[YOUR DESIRED BROWSER PATH HERE]"
 }
