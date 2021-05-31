@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const puppeteer = require('puppeteer');
+const { browser_path } = require('../../config.json');
 const MessageEmbed = Discord.MessageEmbed;
 const Error = require('../../error/error.js')
 
@@ -91,6 +92,7 @@ async function retrieveTimetable() {
     try {
         const browser = await puppeteer.launch({
             headless: true,
+            executablePath: browser_path,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
         const [page] = await browser.pages();

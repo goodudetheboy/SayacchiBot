@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const Scraper = require('images-scraper');
+const { browser_path } = require('../../config.json');
 const MessageEmbed = Discord.MessageEmbed;
 const Utils = require('../../utils/utils');
 
@@ -39,6 +40,7 @@ var imageStorage;
 const google = new Scraper({
     puppeteer: {
         headless: true,
+        executablePath: browser_path,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     }
 });
