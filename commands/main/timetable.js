@@ -33,7 +33,7 @@ module.exports = {
                     await refreshTimetable();
                     timeslots = await checkLiveInTimetable('hiyama', timetable);
                     // In case of infinite while loop, return and send error code 1
-                    if(errorStopper == 10) return Error.sendErrorCode(message, 1);
+                    if(errorStopper == 5) return Error.sendErrorCode(message, 1);
                     errorStopper++;
                 }
                 if(timeslots.length == 0) {
