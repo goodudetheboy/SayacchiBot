@@ -26,21 +26,35 @@ module.exports = {
             case 'sayacchi':
                 // TODO: check if timetable is too old by getting time from somewhere
                 message.channel.send('You want to know what time I\'m live?');
-                var timeslots = await checkLiveInTimetable('hiyama', timetable);
+                var timeslotsToday = await checkLiveInTimetable('hiyama', getStoredTodayTimetable());
+                var timeslotsTomorrow = await checkLiveInTimetable('hiyama', getStoredTomorrowTimetable());
                 var errorStopper = 0;
-                while(typeof timeslots === 'undefined') {
+                while(typeof timeslotsToday === 'undefined') {
                     message.channel.send('Too bad there\'s nothing on my current timetable, I\'ll refresh my timetable for you!');
                     await refreshTimetable();
-                    timeslots = await checkLiveInTimetable('hiyama', timetable);
+                    timeslotsToday = await checkLiveInTimetable('hiyama', getStoredTodayTimetable());
+                    timeslotsTomorrow = await checkLiveInTimetable('hiyama', getStoredTomorrowTimetable());
                     // In case of infinite while loop, return and send error code 1
                     if(errorStopper == 5) return Error.sendErrorCode(message, 1);
                     errorStopper++;
                 }
-                if(timeslots.length == 0) {
-                   return message.channel.send('Too bad I\'ll not be live in my current timetable, but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!');
+
+                var day = 0; // 0 = today, 1 = tomorrow
+                while(day <= 1) {
+                    timeslots = (day == 0) ? timeslotsToday : timeslotsTomorrow;
+                    var dayText = ((day == 0) ? 'today' : 'tomorrow');
+                    if(timeslots.length == 0) {
+                        return message.channel.send(`Too bad I\'ll not be live ${ dayText }, but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!`);
+                    }
+                    message.channel.send(`Here\'s when I will be live ${ dayText }:`);
+                    for(var i=0; i < timeslotsToday.length; i++) {
+                        sendTimeslot(message, timeslots[i]);
+                    }
+                    day = 1;
                 }
-                message.channel.send('Here\'s when I will be live:');
-                for(var i=0; i < timeslots.length; i++) {
+                
+                message.channel.send('Here\'s when I will be live tomorrow:');
+                for(var i=0; i < timeslotsTomorrow.length; i++) {
                     sendTimeslot(message, timeslots[i]);
                 }
                 break;
@@ -79,7 +93,7 @@ module.exports = {
 /////////////////////////////MAIN FUNCTION/////////////////////////////
 var timetable;
 var todayTimetable;
-var tmrTimetable;
+var tomorrowTimetable;
 (async () => {
     await refreshAndSplitTimetable();
     // await checkLiveInRepeat('saya', 1000);
@@ -143,7 +157,7 @@ async function sendTimetable(message, limit) {
     message.channel.send("Here's your timetable!");
 
     // TODO: put a more robust try/catch here
-    var timetableToSend = (limit == 0) ? this.timetable : ((limit == 1) ? this.todayTimetable : this.tmrTimetable);
+    var timetableToSend = (limit == 0) ? this.timetable : ((limit == 1) ? this.todayTimetable : this.tomorrowTimetable);
     if(typeof timetableToSend === 'undefined') {
         await refreshAndSplitTimetable();
     }
@@ -171,7 +185,7 @@ async function splitTimetable() {
     var todayI = 0;
     var tomorrowI = 0;
     this.todayTimetable = new Map();
-    this.tmrTimetable = new Map();
+    this.tomorrowTimetable = new Map();
     for(var i=0; i < this.timetable.size; i++) {
         var timeslot = this.timetable.get(i);
         // check for today's timeslot by comparing with previous time slot
@@ -182,7 +196,7 @@ async function splitTimetable() {
         this.todayTimetable.set(i, timeslot);
     }
     for(var k=0; tomorrowI < this.timetable.size; k++) {
-        this.tmrTimetable.set(k, this.timetable.get(tomorrowI)); 
+        this.tomorrowTimetable.set(k, this.timetable.get(tomorrowI)); 
         tomorrowI++;
     }
 
@@ -256,3 +270,10 @@ function getStoredTimetable() {
     return this.timetable;
 }
 
+function getStoredTodayTimetable() {
+    return this.todayTimetable;
+}
+
+function getStoredTomorrowTimetable() {
+    return this.tomorrowTimetable;
+}
