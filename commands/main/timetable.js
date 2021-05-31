@@ -79,7 +79,7 @@ module.exports = {
 /////////////////////////////MAIN FUNCTION/////////////////////////////
 var timetable;
 var todayTimetable;
-var tmrTimetable;
+var tomorrowTimetable;
 (async () => {
     await refreshAndSplitTimetable();
     // await checkLiveInRepeat('saya', 1000);
@@ -143,7 +143,7 @@ async function sendTimetable(message, limit) {
     message.channel.send("Here's your timetable!");
 
     // TODO: put a more robust try/catch here
-    var timetableToSend = (limit == 0) ? this.timetable : ((limit == 1) ? this.todayTimetable : this.tmrTimetable);
+    var timetableToSend = (limit == 0) ? this.timetable : ((limit == 1) ? this.todayTimetable : this.tomorrowTimetable);
     if(typeof timetableToSend === 'undefined') {
         await refreshAndSplitTimetable();
     }
@@ -171,7 +171,7 @@ async function splitTimetable() {
     var todayI = 0;
     var tomorrowI = 0;
     this.todayTimetable = new Map();
-    this.tmrTimetable = new Map();
+    this.tomorrowTimetable = new Map();
     for(var i=0; i < this.timetable.size; i++) {
         var timeslot = this.timetable.get(i);
         // check for today's timeslot by comparing with previous time slot
@@ -182,7 +182,7 @@ async function splitTimetable() {
         this.todayTimetable.set(i, timeslot);
     }
     for(var k=0; tomorrowI < this.timetable.size; k++) {
-        this.tmrTimetable.set(k, this.timetable.get(tomorrowI)); 
+        this.tomorrowTimetable.set(k, this.timetable.get(tomorrowI)); 
         tomorrowI++;
     }
 
