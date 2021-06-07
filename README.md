@@ -4,7 +4,7 @@ A cool Discord bot I wrote in appreciation of my favorite WeatherNews Caster: Hi
 ---
 
 ### Features ###
-TBA
+Aside the command line listed above, SayacchiBot also automatically detects whenever Sayacchi is live, and send appropriate message to your desired channel. To configure what channel where you want to receive the notification, go to `./interval.js`, and copy-paste your desired channel id in the `DESIRED_CHANNEL_ID` const. There's no error checking for this yet, so you HAVE to put something in there, or else it won't work lol.
 
 ---
 
