@@ -75,6 +75,7 @@ module.exports = {
         }
     },
     // Set interval to check live, input time is in HOUR
+    // Return value true, if online, and false if not
     async checkLiveInRepeat(channel, casterName) {
         // TODO: Currently this only supports 'saya', to be expanded later
         console.log(`Checking ${ casterName }'s live status`);
@@ -83,11 +84,15 @@ module.exports = {
         await refreshAndSplitTimetable();
 
         if(typeof getStoredTimetable() === 'undefined') {
-            return console.log('Schedule not yet populated');
-        }
-        return (checkLiveWithCurrentTime(casterName)) ?
-            channel.send(`${ casterName } is live now!`) :
+            console.log('Schedule not yet populated');
+            return false;
+        } else if(checkLiveWithCurrentTime(casterName)) {
+            channel.send(`${ casterName } is live now!`);
+            return true;
+        } else {
             console.log(`${ casterName } is not live now`);
+            return false;
+        };
     }
 }
 /////////////////////////////MAIN FUNCTION/////////////////////////////

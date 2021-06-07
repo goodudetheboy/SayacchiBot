@@ -1,10 +1,10 @@
 const Discord = require('discord.js');
-const { prefix, token, cse_id, api_key, test_channel_id } = require('./config.json');
+const { prefix, token, cse_id, api_key} = require('./config.json');
 const fs = require('fs');
 // const GoogleImage = require('google-images');
 const Error = require('./error/error.js');
 // const Utils = require('./utils.js');
-
+const Interval = require('./interval/interval');
 // const google = new GoogleImage(cse_id, api_key);
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -30,12 +30,7 @@ client.once('ready', () => {
     .catch(console.error);
 
     // TODO: below is interval action, consider refactoring it into a different file, say 'repeat.js'
-    const timetableCommand = client.commands.get('timetable');
-    // const checkLiveChannel = client.channels.cache.get(test_channel_id);
-    const checkLiveChannel = client.channels.cache.get('839154353046290513');
-    setInterval(function() { 
-        timetableCommand.checkLiveInRepeat(checkLiveChannel, 'hiyama');
-    }, 1000 * 60 * 60);
+    Interval.run(client);
 });
 
 client.on('message', message => {
