@@ -1,14 +1,17 @@
 # **SayacchiBot** #
+
 A cool Discord bot I wrote in appreciation of my favorite WeatherNews Caster: Hiyama Saya, AKA Sayacchi!
 
 ---
 
-### Features ###
+## Features ##
+
 Aside the command line listed above, SayacchiBot also automatically detects whenever Sayacchi is live, and send appropriate message to your desired channel. To configure what channel where you want to receive the notification, go to `./interval.js`, and copy-paste your desired channel id in the `DESIRED_CHANNEL_ID` const. There's no error checking for this yet, so you HAVE to put something in there, or else it won't work lol.
 
 ---
 
-### Full Command List ###
+## Full Command List ##
+
 ```
 !saya
 Get random image of Sayacchi from Google Images.
@@ -30,19 +33,22 @@ Reloads a command (for testing use only)
 
 ---
 
-### Installation ###
+## Installation ##
+
 1. Install node
 2. Run `npm install` in this project directory to install dependencies. This will take a while since I'm using puppeteer, which downloads the whole Chromium package
 3. Go to ./config.json and put in your Discord token ID and the browser path that your environment will be using (`puppeteer` will be using this). I'll add support for Chromium dependency later.
-3. Run `npm start`
+4. Run `npm start`
 
 ---
 
-### Hosting ###
+## Hosting ##
+
 Currently I'm hosting on repl.it, which works fine for now, but if you want to use it, you will need to create a Bash project instead of a Node.js project to run this project.
 I haven't explored other options yet, but to use my project in Heroku, you may have to follow further instruction provided in the npm's page of `images-scraper`, which is here: https://www.npmjs.com/package/images-scraper
 
 ---
 
-### Bug Reporting ###
+## Bug Reporting ##
+
 Raise an issue and I'll look into it ASAP, or maybe never, idk I'm a busy man.
