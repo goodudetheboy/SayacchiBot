@@ -18,10 +18,11 @@ function setCheckLive(client) {
     const timetableCommand = client.commands.get('timetable');
     const checkLiveChannel = client.channels.cache.get(DESIRED_CHANNEL_ID); // replace args inside for TEST_CHANNEL_ID
     checkLiveInterval = setInterval(function() {
-        if(timetableCommand.checkLiveInRepeat(checkLiveChannel, 'hiyama')) {
-            console.log(`Sayacchi is online, delaying live checking for another ${ DELAY_TIME_IN_HOUR } hours`);
-            delayCheckLive(client);         
-        }   
+        timetableCommand.checkLiveInRepeat(checkLiveChannel, 'hiyama')
+        // if(timetableCommand.checkLiveInRepeat(checkLiveChannel, 'hiyama')) {
+        //     console.log(`Sayacchi is online, delaying live checking for another ${ DELAY_TIME_IN_HOUR } hours`);
+        //     delayCheckLive(client);         
+        // }   
     }, 1 * HOUR_IN_MILLISECOND);
 
     console.log('Live checking initalized');
