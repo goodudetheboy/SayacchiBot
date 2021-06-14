@@ -87,10 +87,12 @@ module.exports = {
             console.log('Schedule not yet populated');
             return false;
         } else if(checkLiveWithCurrentTime(casterName)) {
-            channel.send(`${ casterName } is live now!`);
+            channel.send(`Sayacchi is live now!`);
             return true;
         } else {
-            console.log(`${ casterName } is not live now`);
+            // replace ${ casterName } with Sayacchi for now
+            // TODO: add some sort of name storage to be more flexible
+            console.log(`Sayacchi is not live now`);
             return false;
         };
     }
