@@ -79,10 +79,9 @@ module.exports = {
     async checkLiveInRepeat(channel, casterName) {
         // TODO: Currently this only supports 'saya', to be expanded later
         console.log(`Checking ${ casterName }'s live status`);
-
+        console.log(`Current time : ${ getCurrentTimeFromTimezone('+9').getHours() }`); 
         // You might not need this during testing
         await refreshAndSplitTimetable();
-
         if(typeof getStoredTimetable() === 'undefined') {
             console.log('Schedule not yet populated');
             return false;
