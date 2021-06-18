@@ -82,6 +82,7 @@ module.exports = {
         console.log(`Current time : ${ getCurrentTimeFromTimezone('+9').getHours() }`); 
         // You might not need this during testing
         await refreshAndSplitTimetable();
+        logTimetable(getStoredTodayTimetable()); 
         if(typeof getStoredTimetable() === 'undefined') {
             console.log('Schedule not yet populated');
             return false;
@@ -256,11 +257,16 @@ function checkLiveWithCurrentTime(casterName) {
     return (currentHour >= liveHour && currentHour < liveHour+3);
 }
 
-// Set interval to check live, input time is in HOUR
-function checkLiveInRepeat(channel, casterName, timetInHour) {
-    return setInterval(function() {
-        
-    }, parseInt(timetInHour));
+/**
+ * Log the input timetable
+ * 
+ * @param {*} timetable timetable to be logged
+ */
+function logTimetable(timetable) {
+    for(var i=0; i < timetable.size; i++) {
+        var timeslot = timetable.get(i);
+        console.log(`${ timeslot.time } - ${ timeslot.casterName }`);
+    }
 }
 
 // Get time of input timezone from UTC
