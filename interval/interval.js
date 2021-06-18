@@ -22,7 +22,7 @@ function setCheckLive(client) {
             console.log(`Sayacchi is online, delaying live checking for another ${ DELAY_TIME_IN_HOUR } hours`);
             delayCheckLive(client);         
         }   
-    }, 1 * HOUR_IN_MILLISECOND);
+    }, 1.5 * HOUR_IN_MILLISECOND);
 
     console.log('Live checking initalized');
 }

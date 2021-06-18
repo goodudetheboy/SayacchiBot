@@ -13,10 +13,9 @@ module.exports = {
         if(!args.length) {
             message.channel.send('I\'m getting the timetable, please wait for me ok <3');
             message.channel.send('番組表？ちょっと待ってね ❤');
-            return await sendTimetable(message, 0).catch(console.error);
+            return sendTimetable(message, 0).catch(console.error);
         } 
             // TODO: Check timetable of other casters too
-        var timetable = getStoredTimetable();
         switch(args[0]) {
             case 'refresh':
                 message.channel.send('You want to refresh the timetable? Ok then');
@@ -26,14 +25,14 @@ module.exports = {
             case 'sayacchi':
                 // TODO: check if timetable is too old by getting time from somewhere
                 message.channel.send('You want to know what time I\'m live?');
-                var timeslotsToday = await checkLiveInTimetable('hiyama', getStoredTodayTimetable());
-                var timeslotsTomorrow = await checkLiveInTimetable('hiyama', getStoredTomorrowTimetable());
+                var timeslotsToday = checkLiveInTimetable('hiyama', getStoredTodayTimetable());
+                var timeslotsTomorrow = checkLiveInTimetable('hiyama', getStoredTomorrowTimetable());
                 var errorStopper = 0;
                 while(typeof timeslotsToday === 'undefined') {
                     message.channel.send('Too bad there\'s nothing on my current timetable, I\'ll refresh my timetable for you!');
                     await refreshTimetable();
-                    timeslotsToday = await checkLiveInTimetable('hiyama', getStoredTodayTimetable());
-                    timeslotsTomorrow = await checkLiveInTimetable('hiyama', getStoredTomorrowTimetable());
+                    timeslotsToday = checkLiveInTimetable('hiyama', getStoredTodayTimetable());
+                    timeslotsTomorrow = checkLiveInTimetable('hiyama', getStoredTomorrowTimetable());
                     // In case of infinite while loop, return and send error code 1
                     if(errorStopper == 5) return Error.sendErrorCode(message, 1);
                     errorStopper++;
@@ -41,21 +40,17 @@ module.exports = {
 
                 var day = 0; // 0 = today, 1 = tomorrow
                 while(day <= 1) {
-                    timeslots = (day == 0) ? timeslotsToday : timeslotsTomorrow;
-                    var dayText = ((day == 0) ? 'today' : 'tomorrow');
+                    var timeslots = (day == 0) ? timeslotsToday : timeslotsTomorrow;
+                    var dayText = (day == 0) ? 'today' : 'tomorrow';
                     if(timeslots.length == 0) {
-                        return message.channel.send(`Too bad I\'ll not be live ${ dayText }, but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!`);
+                        message.channel.send(`Too bad I\'ll not be live ${ dayText }, but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!`);
+                    } else {
+                        message.channel.send(`Here\'s when I will be live ${ dayText }:`);
+                        for(var i=0; i < timeslotsToday.length; i++) {
+                            sendTimeslot(message, timeslots[i]);
+                        }
                     }
-                    message.channel.send(`Here\'s when I will be live ${ dayText }:`);
-                    for(var i=0; i < timeslotsToday.length; i++) {
-                        sendTimeslot(message, timeslots[i]);
-                    }
-                    day = 1;
-                }
-                
-                message.channel.send('Here\'s when I will be live tomorrow:');
-                for(var i=0; i < timeslotsTomorrow.length; i++) {
-                    sendTimeslot(message, timeslots[i]);
+                    day++;
                 }
                 break;
             case 'today': // TODO:
@@ -76,13 +71,11 @@ module.exports = {
     },
     // Set interval to check live, input time is in HOUR
     // Return value true, if online, and false if not
-    async checkLiveInRepeat(channel, casterName) {
+    checkLiveInRepeat(channel, casterName) {
         // TODO: Currently this only supports 'saya', to be expanded later
         console.log(`Checking ${ casterName }'s live status`);
         console.log(`Current time : ${ getCurrentTimeFromTimezone('+9').getHours() }`); 
         // You might not need this during testing
-        await refreshAndSplitTimetable();
-        logTimetable(getStoredTodayTimetable()); 
         if(typeof getStoredTimetable() === 'undefined') {
             console.log('Schedule not yet populated');
             return false;
@@ -94,7 +87,7 @@ module.exports = {
             // TODO: add some sort of name storage to be more flexible
             console.log(`Sayacchi is not live now`);
             return false;
-        };
+        }
     }
 }
 /////////////////////////////MAIN FUNCTION/////////////////////////////
@@ -103,7 +96,10 @@ var todayTimetable;
 var tomorrowTimetable;
 (async () => {
     await refreshAndSplitTimetable();
-    // await checkLiveInRepeat('saya', 1000);
+    setInterval(function() {
+        console.log("Interval refreshing of timetable");
+        refreshAndSplitTimetable();
+    }, 1000 * 60 * 60)
 })();
 
 /////////////////////////////FUNCTIONS BELOW/////////////////////////////
