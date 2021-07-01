@@ -46,8 +46,8 @@ module.exports = {
                         message.channel.send(`Too bad I\'ll not be live ${ dayText }, but you can try refreshing by doing \`!timetable refresh\` to see if thing\'s better!`);
                     } else {
                         message.channel.send(`Here\'s when I will be live ${ dayText }:`);
-                        for(var i=0; i < timeslotsToday.length; i++) {
-                            sendTimeslot(message, timeslots[i]);
+                        for (var timeslot of timeslots) {
+                            sendTimeslot(message, timeslot);
                         }
                     }
                     day++;
