@@ -11,7 +11,7 @@ module.exports = {
         // TODO: add remove element and when currentI maxed out
         if(args.length == 0) {
             console.log(`Requesting Sayacchi image from storage by ${ message.author.id } - ${ message.author.username }`);
-            return sendImage(message, 'UwU さやっち so kawaii');
+            return imageStorage.sendImage(message, 'UwU さやっち so kawaii', 0xff0000);
         }
         
         switch(args[0]) {

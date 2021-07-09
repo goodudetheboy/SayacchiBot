@@ -1,6 +1,10 @@
+const Discord = require('discord.js');
+const MessageEmbed = Discord.MessageEmbed;
+
 const Scraper = require('images-scraper');
-const { browser_path } = require('../../config.json');
 const Utils = require('../../utils/utils');
+
+const { browser_path } = require('../../config.json');
 
 module.exports = class ImageStorage {
     constructor(imageQuery, imageNum) {
@@ -27,5 +31,17 @@ module.exports = class ImageStorage {
 
     getImageByIndex(index) {
         return this.imageStorage[index];
+    }
+
+    sendImage(message, customTitle, customColor) {
+        let image = this.getRandomImage();
+        while(!Utils.checkImageUrl(image.url)) {
+            image = this.getRandomImage();
+        }
+        const embed = new MessageEmbed()
+            .setTitle(customTitle)
+            .setColor(customColor)
+            .setImage(image.url);
+        return message.channel.send(embed);
     }
 }
