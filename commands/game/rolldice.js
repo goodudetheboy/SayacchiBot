@@ -4,7 +4,7 @@ const MessageActionRow = require('discord-buttons').MessageActionRow;
 
 module.exports = {
     name: 'rolldice',
-    description: 'Play a Cho-han, a.k.a. odd-or-even game with Sayacchi! Guess the correct odd or even of the Lucky Number (ラッキーナンバー）and win a special prize!',
+    description: 'Play a Cho-han, a.k.a. odd-or-even game with Sayacchi! Guess the correct odd or even of the Lucky Number (ラッキーナンバー）, which is the sum of 2 dice, and win a special prize!',
     args: false,
     aliases: [ 'chohan' ],
     execute(message, args) {
