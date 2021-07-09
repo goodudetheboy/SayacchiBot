@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
-const Scraper = require('images-scraper');
-const { browser_path } = require('../../config.json');
 const MessageEmbed = Discord.MessageEmbed;
 const Utils = require('../../utils/utils');
+const ImageStorage = require('../class/image-storage');
 
 module.exports = {
     name: 'saya',
@@ -25,15 +24,7 @@ module.exports = {
     sendImage
 }
 /////////////////////////////MAIN FUNCTION/////////////////////////////
-var imageStorage;
-
-const google = new Scraper({
-    puppeteer: {
-        headless: true,
-        executablePath: browser_path,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }
-});
+var imageStorage = new ImageStorage("檜山沙耶WNI", 150);
   
 (async () => {// 檜山沙耶, Hiyama Saya
     console.log('Setting up image storage');
@@ -44,14 +35,14 @@ const google = new Scraper({
 /////////////////////////////FUNCTIONS BELOW/////////////////////////////
 async function refreshImageStorage() {
     console.log('Refreshing image storage');
-    imageStorage = await google.scrape("檜山沙耶WNI", 150);
+    await imageStorage.refresh();
     console.log('Image storage refreshed');
 }
 
 function sendImage(message, customTitle) {
-    let image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
+    let image = imageStorage.getRandomImage();
     while(!Utils.checkImageUrl(image.url)) {
-        image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
+        image = imageStorage.getRandomImage();
         console.log('URL not image, rerolling')
     }
     console.log(image.url);

@@ -1,4 +1,5 @@
 const Error = require('../../error/error.js');
+const ImageStorage = require('../class/image-storage');
 
 module.exports = {
     name: 'prize',

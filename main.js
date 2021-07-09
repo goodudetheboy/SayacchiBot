@@ -1,24 +1,26 @@
 const Discord = require('discord.js');
-const { prefix, token, cse_id, api_key} = require('./config.json');
-const fs = require('fs');
-// const GoogleImage = require('google-images');
-const Error = require('./error/error.js');
-// const Utils = require('./utils.js');
-const Interval = require('./handler/interval');
-const ButtonHandler = require('./handler/button');
-// const google = new GoogleImage(cse_id, api_key);
 const client = new Discord.Client();
+const { prefix, token } = require('./config.json');
+
+const fs = require('fs');
 client.commands = new Discord.Collection();
 const commandFolders = fs.readdirSync('./commands');
+
+const Error = require('./error/error.js');
+const IntervalHandler = require('./handler/interval');
+const ButtonHandler = require('./handler/button');
 const disbut = require('discord-buttons');
 disbut(client);
 
 for (const folder of commandFolders) {
-	const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
-	for (const file of commandFiles) {
-		const command = require(`./commands/${folder}/${file}`);
-		client.commands.set(command.name, command);
-	}
+    if (folder != 'class') {
+        const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+        for (const file of commandFiles) {
+            console.log(`Loading command ${folder}/${file} into client`);
+            const command = require(`./commands/${folder}/${file}`);
+            client.commands.set(command.name, command);
+        }
+    }
 }
 
 client.once('ready', () => {
@@ -32,8 +34,7 @@ client.once('ready', () => {
     .then(console.log('Bot activity set successfully'))
     .catch(console.error);
 
-    // TODO: below is interval action, consider refactoring it into a different file, say 'repeat.js'
-    Interval.run(client);
+    IntervalHandler.run(client);
 });
 
 client.on('message', message => {
