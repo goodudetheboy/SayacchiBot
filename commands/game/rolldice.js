@@ -14,21 +14,23 @@ module.exports = {
 }
 
 function startGame(message) {
+    let userId = message.author.id;
+
     let evenButton = new MessageButton()
                         .setLabel("Even 丁")
                         .setStyle("red")
-                        .setID("oddEven_even")
+                        .setID(`oddEven_${userId}_even`)
 
     let oddButton = new MessageButton()
                         .setLabel("Odd 半")
                         .setStyle("green")
-                        .setID("oddEven_odd")
-
+                        .setID(`oddEven_${userId}_odd`)
 
     let buttonRow = new MessageActionRow()
-        .addComponent(oddButton)
-        .addComponent(evenButton)
+                        .addComponent(oddButton)
+                        .addComponent(evenButton);
 
+    message.channel.send("Let's play the rolling dice game! Guess even or odd of sum of the two dice!");
     message.channel.send("ゲームスタート！", { component: buttonRow });
 }
 
@@ -36,16 +38,17 @@ function randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-function check(client, button, answer) {
+function check(client, button, userId, answer) {
     button.message.channel.send("Rolling dice... 🎲");
     button.message.delete();
     setTimeout(function() {
+        let user = `<@${ userId }>`;
+
         console.log('Rolling dice');
-    
-        let dice1 = randomInteger(1, 6);
-        let dice2 = randomInteger(1, 6);
-        let sum = dice1 + dice2;
-        let isOdd = (sum % 2 != 0);
+        let die1 = randomInteger(1, 6);
+        let die2 = randomInteger(1, 6);
+        let sum = die1 + die2;
+        let isOdd = sum % 2 != 0;
         let youWinCheck;
     
         if (answer == "odd") {
@@ -56,9 +59,9 @@ function check(client, button, answer) {
             Error.sendErrorCode(button.message, 2);
         }
     
-        button.message.channel.send(`Dice 1 is ${ numberToEmoji(dice1) }`);
-        button.message.channel.send(`Dice 2 is ${ numberToEmoji(dice2) }`);
-        button.message.channel.send(`You chose ${ answer }`);
+        button.message.channel.send(`Die 1 is ${ numberToEmoji(die1) }`);
+        button.message.channel.send(`Die 2 is ${ numberToEmoji(die2) }`);
+        button.message.channel.send(`${ user }, you chose ${ answer }`);
     
         if (youWinCheck) {
             youWin(button.message, client);
