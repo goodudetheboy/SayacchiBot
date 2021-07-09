@@ -12,18 +12,7 @@ module.exports = {
         // TODO: add remove element and when currentI maxed out
         if(args.length == 0) {
             console.log(`Requesting Sayacchi image from storage by ${ message.author.id } - ${ message.author.username }`);
-            var image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
-            while(!Utils.checkImageUrl(image.url)) {
-                image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
-                console.log('URL not image, rerolling')
-            }
-            // currentI++;
-            console.log(image.url);
-            const embed = new MessageEmbed()
-                .setTitle('UwU さやっち so kawaii')
-                .setColor(0xff0000)
-                .setImage(image.url);
-            return message.channel.send(embed);
+            return sendImage(message, 'UwU さやっち so kawaii');
         }
         
         switch(args[0]) {
@@ -32,7 +21,8 @@ module.exports = {
                 await refreshImageStorage();
                 message.channel.send('Images refreshed!');
         }
-    }
+    },
+    sendImage
 }
 /////////////////////////////MAIN FUNCTION/////////////////////////////
 var imageStorage;
@@ -56,4 +46,18 @@ async function refreshImageStorage() {
     console.log('Refreshing image storage');
     imageStorage = await google.scrape("檜山沙耶WNI", 150);
     console.log('Image storage refreshed');
+}
+
+function sendImage(message, customTitle) {
+    let image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
+    while(!Utils.checkImageUrl(image.url)) {
+        image = imageStorage[Utils.getRandomFromRange(0, imageStorage.length)];
+        console.log('URL not image, rerolling')
+    }
+    console.log(image.url);
+    const embed = new MessageEmbed()
+        .setTitle(customTitle)
+        .setColor(0xff0000)
+        .setImage(image.url);
+    return message.channel.send(embed);
 }
