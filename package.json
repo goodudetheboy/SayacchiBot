@@ -10,6 +10,7 @@
   "author": "goodudetheboy",
   "license": "MIT",
   "dependencies": {
+    "discord-buttons": "^3.2.1",
     "discord.js": "^12.5.3",
     "google-images": "^2.1.0",
     "image-search-google": "^1.3.0",

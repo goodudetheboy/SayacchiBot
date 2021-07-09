@@ -5,10 +5,13 @@ const fs = require('fs');
 const Error = require('./error/error.js');
 // const Utils = require('./utils.js');
 const Interval = require('./interval/interval');
+const ButtonHandler = require('./button/button');
 // const google = new GoogleImage(cse_id, api_key);
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFolders = fs.readdirSync('./commands');
+const disbut = require('discord-buttons');
+disbut(client);
 
 for (const folder of commandFolders) {
 	const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
@@ -52,6 +55,10 @@ client.on('message', message => {
         console.error(error);
         Error.sendUnknownError(message);
     }
+});
+
+client.on('clickButton', async(button) => {
+    ButtonHandler.run(client, button);
 });
 
 client.login(token);  
