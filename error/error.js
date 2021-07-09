@@ -4,7 +4,7 @@ module.exports = {
         message.reply('オットー、エラーか。私を作成したSIMPに報告してくださいね、フヒヒ。');
     },
     sendErrorCode: function(message, errorCode) {
-        message.reply(`Whoopsie doopsie, there\'s a problem. Please tell this to the simp that created me. Error code ${ errorcode }`);
+        message.reply(`Whoopsie doopsie, there\'s a problem. Please tell this to the simp that created me. Error code ${ errorCode }`);
         message.reply(`オットー、エラーか。私を作成したSIMPに報告してくださいね、フヒヒ。エラーコード ${ errorCode }`);        
     }
 }
