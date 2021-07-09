@@ -1,7 +1,10 @@
 const Discord = require('discord.js');
 const MessageEmbed = Discord.MessageEmbed;
+
 const Utils = require('../../utils/utils');
 const ImageStorage = require('../class/image-storage');
+
+const DEFAULT_MESSAGE_COLOR = 0xff0000;
 
 module.exports = {
     name: 'saya',
@@ -11,7 +14,7 @@ module.exports = {
         // TODO: add remove element and when currentI maxed out
         if(args.length == 0) {
             console.log(`Requesting Sayacchi image from storage by ${ message.author.id } - ${ message.author.username }`);
-            return imageStorage.sendImage(message, 'UwU さやっち so kawaii', 0xff0000);
+            return imageStorage.sendImage(message, 'UwU さやっち so kawaii', DEFAULT_MESSAGE_COLOR);
         }
         
         switch(args[0]) {

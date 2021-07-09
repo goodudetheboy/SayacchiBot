@@ -20,5 +20,4 @@ function diceGameCheck(client, button, userId, answer) {
         let rolldice = client.commands.get("rolldice");
         rolldice.check(client, button, userId, answer);
     }
-    
 }
