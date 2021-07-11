@@ -265,6 +265,13 @@ function logTimetable(timetable) {
     }
 }
 
+function logTimetable(timetable) {
+    for(var i=0; i < timetable.size; i++) {
+        var timeslot = timetable.get(i);
+        console.log(`${ timeslot.time } - ${ timeslot.casterName }`);
+    }
+}
+
 // Get time of input timezone from UTC
 // JST UTC+9
 function getCurrentTimeFromTimezone(timezone) {

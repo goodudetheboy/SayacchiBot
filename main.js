@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { prefix, token } = require('./config.json');
+const { prefix, token, MONGODB_SRV } = require('./config.json');
 
 const fs = require('fs');
 client.commands = new Discord.Collection();
@@ -11,6 +11,9 @@ const IntervalHandler = require('./handler/interval');
 const ButtonHandler = require('./handler/button');
 const disbut = require('discord-buttons');
 disbut(client);
+
+const DatabaseHandler = require('./handler/database.js');
+DatabaseHandler.initialize();
 
 for (const folder of commandFolders) {
     if (folder != 'class') {
