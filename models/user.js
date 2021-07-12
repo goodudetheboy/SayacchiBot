@@ -12,7 +12,8 @@ const userSchema = new Schema({
 
 userSchema.statics.getNameById = async function (userId) {
     let user;
-    user = await this.getNameById(userId)
+    if (userId.startsWith('test')) return userId;
+    user = await this.findById(userId);
     return user.name;
 }
 

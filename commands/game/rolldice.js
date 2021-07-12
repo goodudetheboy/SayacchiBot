@@ -16,6 +16,14 @@ module.exports = {
                 return sendCurrentStreak(message);
             case "highscore":
                 return sendHighscore(message);
+            case "leaderboard":
+                if (args[1] == 'refresh') {
+                    message.channel.send('Refreshing rolldice leaderboard...');
+                    await refreshLeaderboard();
+                    message.channel.send('Rolldice leaderboard refreshed!');
+                    message.channel.send('Here\'s your fresh new leaderboard!');
+                }
+                return sendLeaderboard(message);
         }
     },
     check,
@@ -29,6 +37,9 @@ function setDatabases(databases) {
     UserDB = databases.get('user').User;
     console.log(`Databases initialized in ${ module.exports.name } succesfully`);
 }
+
+var leaderboard;
+const MAX_LEADERBOARD_PLAYER = 5;
 
 function startGame(message) {
     let userId = message.author.id;
@@ -144,6 +155,35 @@ async function sendHighscore(message) {
     let highscore;
     highscore = await RollDiceDB.getHighscore(userId);
     return message.channel.send(`<@${userId}>, your highest streak is ${ highscore }.`);
+}
+
+async function sendLeaderboard(message) {
+    if (typeof leaderboard === 'undefined') {
+        await refreshLeaderboard();
+    }
+    message.channel.send('Leaderboard for rolldice');
+    message.channel.send('RANK - USERNAME - SCORE');
+    for(let rank=1; rank <= leaderboard.size; rank++) {
+        let player = leaderboard.get(rank);
+        message.channel.send(`${rank} - ${player.username} - ${player.score}`);
+    } 
+}
+
+//TODO: consider putting this in highscore schema
+async function refreshLeaderboard() {
+    console.log(`Refreshing rolldice leaderboard`);
+    let sortedPlayers = await RollDiceDB.find().sort({ _id: 1, highscore: -1 });
+    leaderboard = new Map();
+    console.log(sortedPlayers);
+    for (let i=0; i < sortedPlayers.length && i < MAX_LEADERBOARD_PLAYER; i++) {
+        let player = sortedPlayers[i]._doc;
+        let rank = i+1;
+        leaderboard.set(rank, {
+            username: await UserDB.getNameById(player._id),
+            score: player.highscore
+        });
+    }
+    console.log(`Rolldice leaderboard refreshed`);
 }
 
 async function addPlayer(userId) {
