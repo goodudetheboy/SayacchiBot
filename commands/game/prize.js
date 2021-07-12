@@ -11,7 +11,13 @@ module.exports = {
     execute(message, args) {
         message.channel.send('Play one of the games for a chance to win a special prize!');
     },
-    imagePrize
+    imagePrize,
+    setDatabases
+}
+
+// placeholder
+function setDatabases(databases){
+    console.log(`Databases initialized in ${ module.exports.name } succesfully`);
 }
 
 var specialPrize = new ImageStorage("檜山沙耶 インスタグラム", PRIZE_NUM);

@@ -1,6 +1,5 @@
 const MessageButton = require('discord-buttons').MessageButton;
 const MessageActionRow = require('discord-buttons').MessageActionRow;
-const RollDiceDB = require('../../models/rolldice-db');
 
 module.exports = {
     name: 'rolldice',
@@ -19,7 +18,16 @@ module.exports = {
                 return sendHighscore(message);
         }
     },
-    check
+    check,
+    setDatabases
+}
+
+var RollDiceDB;
+var UserDB;
+function setDatabases(databases) {
+    RollDiceDB = databases.get('rolldice-db').RollDiceDB;
+    UserDB = databases.get('user').User;
+    console.log(`Databases initialized in ${ module.exports.name } succesfully`);
 }
 
 function startGame(message) {
@@ -33,7 +41,7 @@ function startGame(message) {
     let oddButton = new MessageButton()
                         .setLabel("Odd 半")
                         .setStyle("green")
-                        .setID(`testoddEven_${userId}_odd`)
+                        .setID(`oddEven_${userId}_odd`)
 
     let buttonRow = new MessageActionRow()
                         .addComponent(evenButton)
@@ -146,10 +154,11 @@ async function addPlayer(userId) {
 }
 
 async function checkExist(userId) {
-    const isExist = await RollDiceDB.exists({ _id: userId });
-    if (!isExist) {
+    const playerExist = await RollDiceDB.exists({ _id: userId });
+    if (!playerExist) {
         await addPlayer(userId);
     }
+    UserDB.checkExist(userId);
 }
 
 function numberToEmoji(number) {

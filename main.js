@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { prefix, token, MONGODB_SRV } = require('./config.json');
+const { prefix, token } = require('./config.json');
 
 const fs = require('fs');
 client.commands = new Discord.Collection();
@@ -13,18 +13,24 @@ const disbut = require('discord-buttons');
 disbut(client);
 
 const DatabaseHandler = require('./handler/database.js');
-DatabaseHandler.initialize();
 
-for (const folder of commandFolders) {
-    if (folder != 'class') {
-        const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
-        for (const file of commandFiles) {
-            console.log(`Loading command ${folder}/${file} into client`);
-            const command = require(`./commands/${folder}/${file}`);
-            client.commands.set(command.name, command);
+(async() => {
+    await DatabaseHandler.initialize(client);
+
+    for (const folder of commandFolders) {
+        if (folder != 'class') {
+            const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+            for (const file of commandFiles) {
+                console.log(`Loading command ${folder}/${file} into client`);
+                const command = require(`./commands/${folder}/${file}`);
+                if (folder == 'game') {
+                    command.setDatabases(DatabaseHandler.databases);
+                }
+                client.commands.set(command.name, command);
+            }
         }
     }
-}
+})();
 
 client.once('ready', () => {
     console.log('Bot is online!');

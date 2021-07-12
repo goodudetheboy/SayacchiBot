@@ -3,7 +3,7 @@ const { MONGODB_SRV } = require('../config.json');
 const fs = require('fs');
 const modelFolder = fs.readdirSync('./models');
 
-async function initialize() {
+async function initialize(client) {
     console.log('Connecting to MongoDB');
     await mongoose.connect(MONGODB_SRV, {
         useNewUrlParser: true,
@@ -13,13 +13,19 @@ async function initialize() {
         console.log('Database connected');
         for (const modelFile of modelFolder) {
             if (modelFile.endsWith('.js')) {
-                console.log(`Initializing '${ modelFile }' database`);
+                let databaseFile = modelFile.substring(0, modelFile.length-3);
+                console.log(`Initializing '${ databaseFile }' database`);
                 const database = require(`../models/${modelFile}`);
+                database.setDiscordClient(client);
+                module.exports.databases.set(databaseFile, database);
             }
         }
     }).catch(console.error);
 }
 
+var databases = new Map();
+
 module.exports = {
+    databases,
     initialize
 };

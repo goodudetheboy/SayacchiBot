@@ -6,7 +6,7 @@ module.exports = {
     run(client, button) {
         let args = button.id.split("_");
         switch (args[0]) {
-            case "oddEven":
+            case "testoddEven":
                 diceGameCheck(client, button, args[1], args[2]);
         }
     }
