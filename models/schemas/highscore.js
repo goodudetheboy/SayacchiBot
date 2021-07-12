@@ -17,11 +17,15 @@ const highscoreSchema = new Schema({
 }, { timestamps: true })
 
 highscoreSchema.statics.getHighscore = async function (userId) {
-    return this.findById(userId).highscore;
+    let player;
+    player = await this.findById(userId);
+    return player.highscore;
 };
 
 highscoreSchema.statics.getCurrentStreak = async function (userId) {
-    return this.findById(userId).currentStreak;
+    let player;
+    player = await this.findById(userId);
+    return player.currentStreak;
 };
 
 

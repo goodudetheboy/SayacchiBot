@@ -14,9 +14,9 @@ module.exports = {
 
         switch (args[0]) {
             case "streak":
-                await sendCurrentStreak(message);
+                return sendCurrentStreak(message);
             case "highscore":
-                await sendHighscore(message);
+                return sendHighscore(message);
         }
     },
     check
@@ -33,7 +33,7 @@ function startGame(message) {
     let oddButton = new MessageButton()
                         .setLabel("Odd 半")
                         .setStyle("green")
-                        .setID(`oddEven_${userId}_odd`)
+                        .setID(`testoddEven_${userId}_odd`)
 
     let buttonRow = new MessageActionRow()
                         .addComponent(evenButton)
@@ -72,6 +72,8 @@ function check(client, button, userId, answer) {
         button.message.channel.send(`Die 2 is ${ numberToEmoji(die2) }`);
         button.message.channel.send(`${ user }, you chose ${ answer }`);
     
+        await checkExist(userId);
+
         if (youWinCheck) {
             await youWin(button.message, client, userId);
         } else {
@@ -83,31 +85,71 @@ function check(client, button, userId, answer) {
 async function youWin(message, client, userId) {
     message.channel.send("You win!");
     message.channel.send("勝利！☆*:.｡.o(≧▽≦)o.｡.:*☆");
-    await checkExist(userId);
-    RollDiceDB
-        .findById(userId)
-        .then(player => {
-            let winStreak = player.currentStreak;
-            winStreak = winStreak + 1;
-            let highscore = (winStreak > player.highscore)
-                            ? winStreak
-                            : player.highscore ;
-            updateStreak(winStreak, highscore, userId);
-            let prize = client.commands.get('prize');
-            prize.imagePrize(message, winStreak);
-        })
-        .catch(console.error);    
 
+    let player;
+    player = await RollDiceDB.findById(userId)
+                             .catch(console.error);
+
+    let winStreak = player.currentStreak;
+    winStreak = winStreak + 1;
+    updateStreak(winStreak, userId);
+    if (winStreak > player.highscore) {
+        updateHighscore(winStreak, userId);
+    }
+    
+    let prize = client.commands.get('prize');
+    prize.imagePrize(message, winStreak);
 }
 
 async function youLose(message, userId) {
     message.channel.send("You lose :*(");
     message.channel.send("負けった 	｡･ﾟﾟ*(>д<)*ﾟﾟ･｡");
-    await checkExist(userId);
+    updateStreak(0, userId);
+}
+
+
+function updateStreak(streak, userId) {
     RollDiceDB
-        .findByIdAndUpdate(userId, { currentStreak: 0 })
-        .then(() => { console.log('Streak reset succesfully'); })
+        .findByIdAndUpdate(userId, { currentStreak: streak })
+        .then(() => { console.log(`${ userId } - Streak updated to ${ streak } succesfully`); })
         .catch(console.error);
+}
+
+function updateHighscore(highscore, userId) {
+    RollDiceDB
+        .findByIdAndUpdate(userId, { highscore: highscore })
+        .then(() => { console.log(`${ userId } - Highscore updated to ${ highscore } succesfully`); })
+        .catch(console.error);
+}
+
+async function sendCurrentStreak(message) {
+    let userId = message.author.id;
+    await checkExist(userId);
+    let currentStreak;
+    currentStreak = await RollDiceDB.getCurrentStreak(userId);
+    return message.channel.send(`<@${userId}>, your current win streak is ${ currentStreak }.`);
+}
+
+async function sendHighscore(message) {
+    let userId = message.author.id;
+    await checkExist(userId);
+    let highscore;
+    highscore = await RollDiceDB.getHighscore(userId);
+    return message.channel.send(`<@${userId}>, your highest streak is ${ highscore }.`);
+}
+
+async function addPlayer(userId) {
+    const player = new RollDiceDB({ _id: userId });
+    await player.save()
+                .catch(console.error);
+    console.log(`Added player with userId ${ userId } to rolldice database`);
+}
+
+async function checkExist(userId) {
+    const isExist = await RollDiceDB.exists({ _id: userId });
+    if (!isExist) {
+        await addPlayer(userId);
+    }
 }
 
 function numberToEmoji(number) {
@@ -119,51 +161,4 @@ function numberToEmoji(number) {
         case 5: return "5️⃣";
         case 6: return "6️⃣";
     }
-}
-
-async function sendCurrentStreak(message) {
-    let userId = message.author.id;
-    let user = `<@${userId}>`;
-    await checkExist(userId);
-    RollDiceDB
-        .findById(userId)
-        .then(player => { 
-            return message.channel.send(`${ user }, your current win streak is ${ player.currentStreak }.`);
-        })
-        .catch(console.error);
-}
-
-async function sendHighscore(message) {
-    let userId = message.author.id;
-    let user = `<@${userId}>`;
-    await checkExist(userId);
-    RollDiceDB
-        .findById(userId)
-        .then(player => { 
-            return message.channel.send(`${ user }, your highest streak is ${ player.highscore }.`);
-        })
-        .catch(console.error);
-}
-
-async function addPlayer(userId) {
-    const player = new RollDiceDB({ _id: userId });
-    await player.save()
-        .then((result) => {
-            console.log(`Added player with userId ${ userId } to rolldice database`);
-        })
-        .catch(console.error);
-}
-
-async function checkExist(userId) {
-    const isExist = await RollDiceDB.exists({ _id: userId });
-    if (!isExist) {
-        await addPlayer(userId);
-    }
-}
-
-function updateStreak(streak, highscore, userId) {
-    RollDiceDB
-        .findByIdAndUpdate(userId, { currentStreak: streak, highscore: highscore })
-        .then(() => { console.log(`Streak updated to ${ streak } succesfully`); })
-        .catch(console.error);
 }
