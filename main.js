@@ -30,6 +30,8 @@ const DatabaseHandler = require('./handler/database.js');
             }
         }
     }
+    
+    IntervalHandler.run(client);
 })();
 
 client.once('ready', () => {
@@ -43,7 +45,6 @@ client.once('ready', () => {
     .then(console.log('Bot activity set successfully'))
     .catch(console.error);
 
-    IntervalHandler.run(client);
 });
 
 client.on('message', message => {
