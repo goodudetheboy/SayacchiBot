@@ -47,12 +47,12 @@ function startGame(message) {
     let evenButton = new MessageButton()
                         .setLabel("Even 丁")
                         .setStyle("red")
-                        .setID(`oddEven_${userId}_even`)
+                        .setID(`rolldice_${userId}_even`)
 
     let oddButton = new MessageButton()
                         .setLabel("Odd 半")
                         .setStyle("green")
-                        .setID(`oddEven_${userId}_odd`)
+                        .setID(`rolldice_${userId}_odd`)
 
     let buttonRow = new MessageActionRow()
                         .addComponent(evenButton)
