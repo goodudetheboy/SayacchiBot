@@ -7,7 +7,7 @@ const highscoreSchema = new Schema({
         required: true
     },
     highscore: {
-        type: String,
+        type: Number,
         default: 0
     },
     currentStreak: {
