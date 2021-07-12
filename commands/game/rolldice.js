@@ -174,7 +174,6 @@ async function refreshLeaderboard() {
     console.log(`Refreshing rolldice leaderboard`);
     let sortedPlayers = await RollDiceDB.find().sort({ _id: 1, highscore: -1 });
     leaderboard = new Map();
-    console.log(sortedPlayers);
     for (let i=0; i < sortedPlayers.length && i < MAX_LEADERBOARD_PLAYER; i++) {
         let player = sortedPlayers[i]._doc;
         let rank = i+1;
