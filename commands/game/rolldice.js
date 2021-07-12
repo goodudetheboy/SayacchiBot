@@ -172,7 +172,7 @@ async function sendLeaderboard(message) {
 //TODO: consider putting this in highscore schema
 async function refreshLeaderboard() {
     console.log(`Refreshing rolldice leaderboard`);
-    let sortedPlayers = await RollDiceDB.find().sort({ _id: 1, highscore: -1 });
+    let sortedPlayers = await RollDiceDB.find().sort({ highscore: -1, _id: -1 });
     leaderboard = new Map();
     for (let i=0; i < sortedPlayers.length && i < MAX_LEADERBOARD_PLAYER; i++) {
         let player = sortedPlayers[i]._doc;
