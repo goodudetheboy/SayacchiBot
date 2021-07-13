@@ -8,8 +8,15 @@ module.exports = {
     description: 'Play one of the games for a chance to win a special prize!',
     args: false,
     aliases: [],
-    execute(message, args) {
-        message.channel.send('Play one of the games for a chance to win a special prize!');
+    async execute(message, args) {
+        switch (args[0]) {
+            case 'refresh':
+                message.channel.send('Refreshing prize...');
+                await refreshPrize();
+                return message.channel.send('Prize refreshed!');
+            default:
+                return message.channel.send('Play one of the games for a chance to win a special prize!');
+        }
     },
     imagePrize,
     setDatabases
@@ -20,9 +27,9 @@ function setDatabases(databases){
     console.log(`Databases initialized in ${ module.exports.name } succesfully`);
 }
 
-var specialPrize = new ImageStorage("檜山沙耶 インスタグラム", PRIZE_NUM);
-var extraSpecialPrize = new ImageStorage("グラビアモデル", PRIZE_NUM);
-var superDuperSpecialPrize = new ImageStorage("jav model", PRIZE_NUM);
+var specialPrize = new ImageStorage('檜山沙耶 インスタグラム', PRIZE_NUM);
+var extraSpecialPrize = new ImageStorage('グラビアモデル', PRIZE_NUM);
+var superDuperSpecialPrize = new ImageStorage('モデルヌード', PRIZE_NUM);
 
 (async () => {
     console.log("Setting up prize");
