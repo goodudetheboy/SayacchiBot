@@ -27,7 +27,7 @@ module.exports = {
     sendImage
 }
 /////////////////////////////MAIN FUNCTION/////////////////////////////
-var imageStorage = new ImageStorage("檜山沙耶WNI", 150);
+var imageStorage = new ImageStorage("\"檜山沙耶\"写真", 150);
   
 (async () => {// 檜山沙耶, Hiyama Saya
     console.log('Setting up image storage');
