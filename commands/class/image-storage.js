@@ -8,7 +8,7 @@ const { browser_path } = require('../../config.json');
 
 module.exports = class ImageStorage {
     constructor(imageQuery, imageNum) {
-        this.imageQuery = String(imageQuery);
+        this.imageQuery = imageQuery.toString();
         this.imageNum = imageNum;
         this.scraper = new Scraper({
             puppeteer: {
