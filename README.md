@@ -34,20 +34,25 @@ Reloads a command (for testing use only)
 
 !rolldice
 Play a Cho-han, a.k.a. odd-or-even game with Sayacchi! Guess the correct odd or even of the Lucky Number (ラッキーナンバー）, which is the sum of 2 dice, and win a special prize!
+    |   leaderboard: to see the leaderboard,
+    |   streak: to see your current streak,
+    |   highscore: to see your highscore
 ```
 
 ## Installation ##
 
 1. Install node
 2. Run `npm install` in this project directory to install dependencies. This will take a while since I'm using puppeteer, which downloads the whole Chromium package
-3. Go to ./config.json and put in your Discord token ID and the browser path that your environment will be using (`puppeteer` will be using this). I'll add support for Chromium dependency later.
-4. Run `npm start`
+3. Go to './config.json' and put in your Discord token ID and the browser path that your environment will be using (`puppeteer` will be using this). I'll add support for Chromium dependency later.
+4. Create a MongoDB Atlast cluster database and generate a SRV to put in the 'MONGODB_SRV' section of 'config.json'
+5. Run `npm start`
 
 ## Hosting ##
 
 Currently I'm hosting on repl.it, which works fine for now, but if you want to use it, you will need to create a Bash project instead of a Node.js project to run this project.
-I haven't explored other options yet, but to use my project in Heroku, you may have to follow further instruction provided in the npm's page of [`images-scraper`](https://www.npmjs.com/package/images-scraper). 
+I haven't explored other options yet, but to use my project in Heroku, you may have to follow further instruction provided in the npm's page of [`images-scraper`](https://www.npmjs.com/package/images-scraper).
 
+You will also need database for this project to run. You can follow this [Youtube video](https://www.youtube.com/watch?v=8no3SktqagY) to get a sense on how to set up a MongoDB server. You can also create your own database whereever, if you know what you're doing. Note that if you are hosting, you should `Allow access from anywhere` in MongoDB Atlas, if you decided to host it on repl.it (since repl.it change IP address every time and you won't know what IP address to whitelist in your Atlas).
 
 ## Bug Reporting ##
 
