@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const MessageEmbed = Discord.MessageEmbed;
 
 const Utils = require('../../utils/utils');
-const ImageStorage = require('../class/image-storage');
+const ImageStorage = require('../../class/image-storage');
 
 const DEFAULT_MESSAGE_COLOR = 0xff0000;
 

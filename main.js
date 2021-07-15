@@ -18,16 +18,14 @@ const DatabaseHandler = require('./handler/database.js');
     await DatabaseHandler.initialize(client);
 
     for (const folder of commandFolders) {
-        if (folder != 'class') {
-            const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
-            for (const file of commandFiles) {
-                console.log(`Loading command ${folder}/${file} into client`);
-                const command = require(`./commands/${folder}/${file}`);
-                if (folder == 'game') {
-                    command.setDatabases(DatabaseHandler.databases);
-                }
-                client.commands.set(command.name, command);
+        const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+        for (const file of commandFiles) {
+            console.log(`Loading command ${folder}/${file} into client`);
+            const command = require(`./commands/${folder}/${file}`);
+            if (folder == 'game') {
+                command.setDatabases(DatabaseHandler.databases);
             }
+            client.commands.set(command.name, command);
         }
     }
     

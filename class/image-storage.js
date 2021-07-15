@@ -2,13 +2,13 @@ const Discord = require('discord.js');
 const MessageEmbed = Discord.MessageEmbed;
 
 const Scraper = require('images-scraper');
-const Utils = require('../../utils/utils');
+const Utils = require('../utils/utils');
 
-const { browser_path } = require('../../config.json');
+const { browser_path } = require('../config.json');
 
 module.exports = class ImageStorage {
     constructor(imageQuery, imageNum) {
-        this.imageQuery = imageQuery.toString();
+        this.imageQuery = String(imageQuery)
         this.imageNum = imageNum;
         this.scraper = new Scraper({
             puppeteer: {

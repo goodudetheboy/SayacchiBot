@@ -1,5 +1,5 @@
 const Error = require('../../error/error.js');
-const ImageStorage = require('../class/image-storage');
+const ImageStorage = require('../../class/image-storage');
 
 const PRIZE_NUM = 100;
 
