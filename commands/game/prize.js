@@ -27,6 +27,8 @@ function setDatabases(databases){
     console.log(`Databases initialized in ${ module.exports.name } succesfully`);
 }
 
+//-----------------------------------------------------------------------------
+
 var specialPrize = new ImageStorage('檜山沙耶 インスタグラム', PRIZE_NUM);
 var extraSpecialPrize = new ImageStorage('グラビアモデル', PRIZE_NUM);
 var superDuperSpecialPrize = new ImageStorage('モデルヌード', PRIZE_NUM);
@@ -36,6 +38,8 @@ var superDuperSpecialPrize = new ImageStorage('モデルヌード', PRIZE_NUM);
     await refreshPrize();
     console.log("Finished setting up prize");
 })();
+
+//-----------------------------------------------------------------------------
 
 function imagePrize(message, streak) {
     try {

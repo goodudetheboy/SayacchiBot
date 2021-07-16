@@ -32,10 +32,11 @@ module.exports = {
 	},
 };
 
-/////////////////////////////MAIN FUNCTION/////////////////////////////
+//-----------------------------------------------------------------------------
 
 
-/////////////////////////////FUNCTIONS BELOW/////////////////////////////
+//-----------------------------------------------------------------------------
+
 function sendEmbedHelp(message, name, description) {
     var embed = new Discord.MessageEmbed()
         .setTitle('Here\'s info for your requested command')

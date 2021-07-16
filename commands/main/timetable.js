@@ -90,7 +90,9 @@ module.exports = {
         }
     }
 }
-/////////////////////////////MAIN FUNCTION/////////////////////////////
+
+//-----------------------------------------------------------------------------
+
 var timetable;
 var todayTimetable;
 var tomorrowTimetable;
@@ -102,7 +104,7 @@ var tomorrowTimetable;
     }, 1000 * 60 * 60)
 })();
 
-/////////////////////////////FUNCTIONS BELOW/////////////////////////////
+//-----------------------------------------------------------------------------
 
 // Retrieve WNI timetable data from https://weathernews.jp/s/solive24/timetable.html
 async function retrieveTimetable() {

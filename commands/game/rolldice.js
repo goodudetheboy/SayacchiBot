@@ -38,8 +38,12 @@ function setDatabases(databases) {
     console.log(`Databases initialized in ${ module.exports.name } succesfully`);
 }
 
+//-----------------------------------------------------------------------------
+
 var leaderboard;
 const MAX_LEADERBOARD_PLAYER = 5;
+
+//-----------------------------------------------------------------------------
 
 function startGame(message) {
     let userId = message.author.id;

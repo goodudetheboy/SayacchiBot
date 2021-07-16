@@ -26,7 +26,10 @@ module.exports = {
     },
     sendImage
 }
-/////////////////////////////MAIN FUNCTION/////////////////////////////
+
+//-----------------------------------------------------------------------------
+
+
 var imageStorage = new ImageStorage("\"檜山沙耶\"写真", 150);
   
 (async () => {// 檜山沙耶, Hiyama Saya
@@ -35,7 +38,8 @@ var imageStorage = new ImageStorage("\"檜山沙耶\"写真", 150);
     console.log('Scrape complete, storage ready for usage');
 })();
 
-/////////////////////////////FUNCTIONS BELOW/////////////////////////////
+//-----------------------------------------------------------------------------
+
 async function refreshImageStorage() {
     console.log('Refreshing image storage');
     await imageStorage.refresh();
