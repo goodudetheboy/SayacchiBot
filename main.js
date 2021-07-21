@@ -8,6 +8,7 @@ const commandFolders = fs.readdirSync('./commands');
 
 const Error = require('./error/error.js');
 const IntervalHandler = require('./handler/interval');
+const TweetHandler = require('./handler/tweet');
 const ButtonHandler = require('./handler/button');
 const disbut = require('discord-buttons');
 disbut(client);
@@ -28,7 +29,7 @@ const DatabaseHandler = require('./handler/database.js');
             client.commands.set(command.name, command);
         }
     }
-    
+    await TweetHandler.initialize(client);
     IntervalHandler.run(client);
 })();
 
