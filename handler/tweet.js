@@ -129,12 +129,10 @@ function streamConnect(retryAttempt) {
     stream.on('data', data => {
         try {
             const json = JSON.parse(data);
-            // console.log(json);
             sendTweet(json);
             // A successful connection resets retry count.
             retryAttempt = 0;
         } catch (e) {
-            console.log(e);
             if (data.detail === "This stream is currently at the maximum allowed connection limit.") {
                 console.log(data.detail)
             } else {
