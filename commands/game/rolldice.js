@@ -1,6 +1,8 @@
 const MessageButton = require('discord-buttons').MessageButton;
 const MessageActionRow = require('discord-buttons').MessageActionRow;
 
+const Utils = require('../../utils/utils');
+
 module.exports = {
     name: 'rolldice',
     description: 'Play a Cho-han, a.k.a. odd-or-even game with Sayacchi! Guess the correct odd or even of the Lucky Number (ラッキーナンバー）, which is the sum of 2 dice, and win a special prize! Higher win streak wins more special prize! Check current win streak with `rolldice streak`.',
@@ -27,7 +29,8 @@ module.exports = {
         }
     },
     check,
-    setDatabases
+    setDatabases,
+    testDatabase
 }
 
 var RollDiceDB;
@@ -66,10 +69,6 @@ function startGame(message) {
     message.channel.send("ゲームスタート！", { component: buttonRow });
 }
 
-function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 function check(client, button, userId, answer) {
     button.message.channel.send("Rolling dice... 🎲🎲");
     button.message.delete();
@@ -77,8 +76,8 @@ function check(client, button, userId, answer) {
         let user = `<@${ userId }>`;
 
         console.log('Rolling dice');
-        let die1 = randomInteger(1, 6);
-        let die2 = randomInteger(1, 6);
+        let die1 = Utils.randomInteger(1, 6);
+        let die2 = Utils.randomInteger(1, 6);
         let sum = die1 + die2;
         let isOdd = sum % 2 != 0;
         let youWinCheck;
@@ -213,4 +212,13 @@ function numberToEmoji(number) {
         case 5: return "5️⃣";
         case 6: return "6️⃣";
     }
+}
+
+async function testDatabase(score) {
+    let userId = 'test';
+    await checkExist(userId);
+    updateStreak(score, userId);
+    let currentStreak;
+    currentStreak = await RollDiceDB.getCurrentStreak(userId);
+    return currentStreak;
 }
