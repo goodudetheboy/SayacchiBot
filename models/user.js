@@ -25,14 +25,20 @@ userSchema.statics.checkExist = async function (userId) {
 }
 
 userSchema.statics.addUser = async function (userId) {
-    const discordUser = await client.users.fetch(userId);
+    let username = 'test';
+
+    if(!userId.startsWith('test')) {
+        const discordUser = await client.users.fetch(userId);
+        username = discordUser.username;
+    }
+
     let newUser = new User({
         _id: userId,
-        name: discordUser.username
+        name: username
     });
     await newUser.save()
                  .catch(console.error);
-    console.log(`Added player with userId ${ userId } with username ${ discordUser.username } to user database`);
+    console.log(`Added player with userId ${ userId } with username ${ username } to user database`);
 }
 
 function setDiscordClient(discordClient) {

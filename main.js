@@ -19,7 +19,8 @@ disbut(client);
 const DatabaseHandler = require('./handler/database.js');
 
 (async() => {
-    await DatabaseHandler.initialize(client);
+    let databases;
+    databases = await DatabaseHandler.initialize(client);
 
     for (const folder of commandFolders) {
         const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
@@ -27,7 +28,7 @@ const DatabaseHandler = require('./handler/database.js');
             console.log(`Loading command ${folder}/${file} into client`);
             const command = require(`./commands/${folder}/${file}`);
             if (folder == 'game') {
-                command.setDatabases(DatabaseHandler.databases);
+                command.setDatabases(databases);
             }
             client.commands.set(command.name, command);
         }
