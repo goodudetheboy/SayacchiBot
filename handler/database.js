@@ -5,7 +5,8 @@ const modelFolder = fs.readdirSync('./models');
 
 module.exports = {
     initialize,
-    testConnection
+    testConnection,
+    disconnect
 };
 
 async function initialize(client) {
@@ -36,11 +37,17 @@ async function connect() {
     console.log('Database connected');
 }
 
+function disconnect() {
+    console.log('Disconnecting from database');
+    mongoose.connection.close();
+    console.log('Database disconnected');
+}
+
 async function testConnection() {
     let success = false;
     await connect()
     .then(() => {
-        mongoose.connection.close();
+        disconnect()
         success = true
     }).catch(error => {
         console.log(`Error connecting to MongoDB: ${ error }`)
