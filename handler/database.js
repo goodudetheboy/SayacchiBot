@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { MONGODB_SRV } = require('../config.json');
+const MONGODB_SRV = process.env.MONGODB_SRV;
 const fs = require('fs');
 const modelFolder = fs.readdirSync('./models');
 

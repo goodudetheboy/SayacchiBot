@@ -1,6 +1,9 @@
+require('dotenv').config()
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { prefix, token } = require('./config.json');
+const { prefix } = require('./config.json');
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 
 const fs = require('fs');
 client.commands = new Discord.Collection();
@@ -71,4 +74,4 @@ client.on('clickButton', async(button) => {
     ButtonHandler.run(client, button);
 });
 
-client.login(token);  
+client.login(DISCORD_TOKEN);  

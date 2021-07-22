@@ -2,7 +2,8 @@
 // LICENSE: Apache-2.0 License
 
 const needle = require('needle');
-const { TWITTER_BEARER_TOKEN, TEST_CHANNEL_ID } = require('../config.json');
+const TWITTER_BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN;
+const TEST_CHANNEL_ID = process.env.TEST_CHANNEL_ID;
 const DESIRED_CHANNEL_ID = '839154353046290513';
 
 const Discord = require('discord.js');

@@ -1,7 +1,7 @@
-const { TEST_CHANNEL_ID } = require('../config.json');
+const TEST_CHANNEL_ID = process.env.TEST_CHANNEL_ID;
+const DESIRED_CHANNEL_ID = process.env.DESIRED_CHANNEL_ID;
 
 const HOUR_IN_MILLISECOND = 1000 * 60 * 60;
-const DESIRED_CHANNEL_ID = '839154353046290513';
 const DELAY_TIME_IN_HOUR = 5;
 
 module.exports = {

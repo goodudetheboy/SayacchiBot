@@ -1,10 +1,4 @@
 {
 	"prefix": "!",
-	"token": "DISCORD_BOT_TOKEN",
-    "cse_id": "CSE_ID",
-    "api_key": "API_KEY",
-    "test_channel_id": "796257585078337559",
-    "browser_path": "[YOUR DESIRED BROWSER PATH HERE]",
-    "MONGODB_SRV": "[MONGODB_SRV HERE]",
-    "TWITTER_BEARER_TOKEN": "[TWITTER_BEARER_TOKEN HERE]"
+    "browser_path": "[VALID BROWSER DIR FOR USE WITH PUPPETEER]"
 }
