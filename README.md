@@ -10,7 +10,11 @@ A cool Discord bot I wrote in appreciation of my favorite WeatherNews Caster: Hi
 
 ## Features ##
 
-Aside the command line listed above, SayacchiBot also automatically detects whenever Sayacchi is live, and send appropriate message to your desired channel. To configure what channel where you want to receive the notification, go to `./interval.js`, and copy-paste your desired channel id in the `DESIRED_CHANNEL_ID` const. There's no error checking for this yet, so you HAVE to put something in there, or else it won't work lol.
+- Get the entire WNI Timetable with simply `!timetable`, `!timetable saya` if you want to know when Sayacchi is live!
+- Notifications whenever Sayacchi is live (channel must be specified in `.env`, `DESIRED_CHANNEL_ID` section)
+- Realtime Tweet fetching from Sayacchi Twitter account
+- Cool games you can play to earn special prizes!
+- Get beautiful images of Sayacchi with `!saya`, powered by `puppeteer`!
 
 ## Full Command List ##
 
@@ -41,10 +45,31 @@ Play a Cho-han, a.k.a. odd-or-even game with Sayacchi! Guess the correct odd or 
 
 ## Installation ##
 
+### Prerequisite ###
+
+- **Discord Bot Token**
+  - Obviously if you want to create a bot.
+- **MongoDB SRV**
+  - Create a MongoDB Atlast cluster database and generate a SRV. Watch this [tutorial](https://www.youtube.com/watch?v=8no3SktqagY) for more information on how to do this.
+- **Twitter Bearer Token**
+  - If you haven't already, apply for a Twitter Devevloper Account, create a new App in there, and retrieve the Twitter Bearer Token for the app.
+- **node.js**
+
+### Starting the Project #
+
 1. Install node
 2. Run `npm install` in this project directory to install dependencies. This will take a while since I'm using puppeteer, which downloads the whole Chromium package
-3. Go to './config.json' and put in your Discord token ID and the browser path that your environment will be using (`puppeteer` will be using this). I'll add support for Chromium dependency later.
-4. Create a MongoDB Atlast cluster database and generate a SRV to put in the 'MONGODB_SRV' section of 'config.json'
+3. Go to `./config.json` and input the browser path you want to use for images scraping for 
+4. Create a `.env` file in the project folder directory, and fill in the following value:
+
+    ```
+    TEST_CHANNEL_ID= [test channel useful for debugging]
+    DESIRED_CHANNEL_ID= [channel that will be used by SayacchiBot to stream realtime information, like Tweet]
+    MONGODB_SRV= [your MongoDB SRV key]
+    TWITTER_BEARER_TOKEN= [your Twitter Bearer Token]
+    DISCORD_TOKEN= [your discord bot token]
+    ```
+
 5. Run `npm start`
 
 ## Hosting ##
