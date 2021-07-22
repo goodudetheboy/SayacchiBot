@@ -31,5 +31,5 @@ jobs:
     - name: Run test
       env:
         MONGODB_SRV: ${{ secrets.MONGODB_SRV }}
-    - run: npm test
+      run: npm test
       
