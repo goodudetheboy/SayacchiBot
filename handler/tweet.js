@@ -52,7 +52,11 @@ const rules = [{
     }, {
         'value': 'from:yuki_uchida_' // 1245974107532849157
     }, {
-        'value': 'from:1417353851020083202' // me
+        'value': 'from:yui_k06'     // 1052086549951602694
+    }, {
+        'value': 'from:nana617_919' // 616115769
+    }, {
+        'value': 'from:goodudetheboy' // 3269123629
     }, {
         'value': 'from:wni_live' // 713252858913632256
     }, {
@@ -162,22 +166,25 @@ function streamConnect(retryAttempt) {
 
 function sendTweet(json) {
     try {
-        let media = json['includes']['media'][0];
+        let mediaArr = json['includes']['media'];
         let user = json['includes']['users'][0];
         let tweet = json['data'];
 
-
         let imageUrl = undefined;
-        if (json['includes']['media'][0]['type'] == 'photo') {
-            imageUrl = media['url'];
-        } else {
-            imageUrl = media['preview_image_url'];
+        if (mediaArr != undefined) {
+            let media = mediaArr[0];
+            if (media['type'] == 'photo') {
+                imageUrl = media['url'];
+            } else {
+                imageUrl = media['preview_image_url'];
+            }
         }
+
         let name = user['name'];
         let profile_image_url = user['profile_image_url'];
-    
         let text = tweet['text'];
         let created_at = tweet['created_at'];
+
         let embed = new MessageEmbed()
             .setColor('#00acee')
             .setAuthor(name, profile_image_url)
@@ -188,7 +195,8 @@ function sendTweet(json) {
             embed.setImage(imageUrl);
         }
     
-        let channelToSend = (fromWeatherNews(tweet['author_id'])) ? tweetChannel : tweetChannel2;
+        let author_id = tweet['author_id'];
+        let channelToSend = (isFromWeatherNews(author_id)) ? tweetChannel : tweetChannel2;
         channelToSend.send(embed);
     } catch(error) {
         console.log(error);
@@ -196,10 +204,11 @@ function sendTweet(json) {
     }
 }
 
-function fromWeatherNews(author_id) {
+function isFromWeatherNews(author_id) {
     switch (author_id) {
         case "713252858913632256":
         case "712914636203433984":
+        case "3269123629":
             return true;
     }
     return false;
