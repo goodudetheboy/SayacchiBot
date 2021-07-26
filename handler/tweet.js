@@ -4,11 +4,12 @@
 const needle = require('needle');
 const TWITTER_BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN;
 const TEST_CHANNEL_ID = process.env.TEST_CHANNEL_ID;
-const DESIRED_CHANNEL_ID = '839154353046290513';
+const DESIRED_CHANNEL_ID = process.env.DESIRED_CHANNEL_ID;
+const DESIRED_CHANNEL_ID_2 = process.env.DESIRED_CHANNEL_ID_2;
 
 const Discord = require('discord.js');
 const MessageEmbed = Discord.MessageEmbed;
-const Error = require('../error/error');
+const ErrorSender = require('../error/error');
 
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules';
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at&expansions=author_id,attachments.media_keys&user.fields=name,profile_image_url&media.fields=media_key,preview_image_url,type,url';
@@ -18,6 +19,7 @@ module.exports = {
         (async () => {
             console.log('Tweet fetching initializing');
             tweetChannel = client.channels.cache.get(DESIRED_CHANNEL_ID);
+            tweetChannel2 = client.channels.cache.get(DESIRED_CHANNEL_ID_2);
             let currentRules;
             try {
                 // Gets the complete list of rules currently applied to the stream
@@ -41,19 +43,20 @@ module.exports = {
     }
 }
 
-var tweetChannel;
+var tweetChannel;  // for weather news
+var tweetChannel2; // for pics
 
 // Edit rules as desired below
 const rules = [{
-        'value': 'from:sayahiyama_1027',
+        'value': 'from:sayahiyama_1027', // 1052079838746435584
     }, {
-        'value': 'from:1417353851020083202'
+        'value': 'from:yuki_uchida_' // 1245974107532849157
     }, {
-        'value': 'from:wni_live'
+        'value': 'from:1417353851020083202' // me
     }, {
-        'value': 'from:yuki_uchida_'
+        'value': 'from:wni_live' // 713252858913632256
     }, {
-        'value': 'from:wni_jp'
+        'value': 'from:wni_jp' // 712914636203433984
     }
 ];
 
@@ -162,7 +165,8 @@ function sendTweet(json) {
         let media = json['includes']['media'][0];
         let user = json['includes']['users'][0];
         let tweet = json['data'];
-    
+
+
         let imageUrl = undefined;
         if (json['includes']['media'][0]['type'] == 'photo') {
             imageUrl = media['url'];
@@ -184,8 +188,19 @@ function sendTweet(json) {
             embed.setImage(imageUrl);
         }
     
-        tweetChannel.send(embed);
+        let channelToSend = (fromWeatherNews(tweet['author_id'])) ? tweetChannel : tweetChannel2;
+        channelToSend.send(embed);
     } catch(error) {
         console.log(error);
+        ErrorSender.sendErrorCodeToChannel(tweetChannel2, 4);
     }
+}
+
+function fromWeatherNews(author_id) {
+    switch (author_id) {
+        case "713252858913632256":
+        case "712914636203433984":
+            return true;
+    }
+    return false;
 }

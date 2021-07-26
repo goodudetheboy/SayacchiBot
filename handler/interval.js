@@ -30,7 +30,6 @@ function setCheckLive(client) {
 }
 
 function setCheckLiveInterval(client, checkLiveChannel, timetableCommand) {
-    console.log("if this appears");
     // live checking interval initializing  
     checkLiveInterval = setInterval(function() {
         if(timetableCommand.checkLiveInRepeat(checkLiveChannel, 'hiyama')) {
