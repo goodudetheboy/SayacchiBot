@@ -42,7 +42,13 @@ var imageStorage = new ImageStorage("\"檜山沙耶\"写真", 150);
 
 async function refreshImageStorage() {
     console.log('Refreshing image storage');
-    await imageStorage.refresh();
+    try {
+        await imageStorage.refresh();
+    } catch(err) {
+        console.log(err);
+        console.log("Retrying refresh");
+        await imageStorage.refresh();
+    }
     console.log('Image storage refreshed');
 }
 

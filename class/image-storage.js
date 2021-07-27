@@ -20,8 +20,7 @@ module.exports = class ImageStorage {
     }
 
     async refresh() {
-        this.imageStorage
-            = await this.scraper.scrape(this.imageQuery, this.imageNum);
+        this.imageStorage = await this.scraper.scrape(this.imageQuery, this.imageNum);    
     }
 
     getRandomImage() {

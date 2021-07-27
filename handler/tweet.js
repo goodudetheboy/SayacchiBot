@@ -18,8 +18,8 @@ module.exports = {
     async initialize(client) {
         (async () => {
             console.log('Tweet fetching initializing');
-            tweetChannel = client.channels.cache.get(DESIRED_CHANNEL_ID);
-            tweetChannel2 = client.channels.cache.get(DESIRED_CHANNEL_ID_2);
+            tempClient = client;
+            retrieveTweetChannel();
             let currentRules;
             try {
                 // Gets the complete list of rules currently applied to the stream
@@ -43,8 +43,10 @@ module.exports = {
     }
 }
 
+var tempClient;
 var tweetChannel;  // for weather news
 var tweetChannel2; // for pics
+var testChannel;
 
 // Edit rules as desired below
 const rules = [{
@@ -169,6 +171,9 @@ function sendTweet(json) {
         let mediaArr = json['includes']['media'];
         let user = json['includes']['users'][0];
         let tweet = json['data'];
+        let author_id = tweet['author_id'];
+
+        console.log(`Sending Tweet from ${ author_id }`);
 
         let imageUrl = undefined;
         if (mediaArr != undefined) {
@@ -195,20 +200,44 @@ function sendTweet(json) {
             embed.setImage(imageUrl);
         }
     
-        let author_id = tweet['author_id'];
         let channelToSend = (isFromWeatherNews(author_id)) ? tweetChannel : tweetChannel2;
+
+        for (let i=0; i<=5; i++) {
+            if (channelToSend == undefined) {
+                console.log(`channelToSend, retrying attempt ${ i }`);
+                retrieveTweetChannel();
+                channelToSend = (isFromWeatherNews(author_id)) ? tweetChannel : tweetChannel2;
+            }
+            if (i == 5) {
+                console.log("Problem sending tweet");
+                console.log("Dumping json content:")
+                console.log(json);
+                return;
+            }
+            break;
+        }
         channelToSend.send(embed);
+
     } catch(error) {
         console.log(error);
-        ErrorSender.sendErrorCodeToChannel(tweetChannel2, 4);
+        ErrorSender.sendErrorCodeToChannel(testChannel, 4);
+        testChannel.send(error.stack);
+        testChannel.send(json);
     }
+}
+
+function retrieveTweetChannel() {
+    tweetChannel = tempClient.channels.cache.get(DESIRED_CHANNEL_ID);
+    tweetChannel2 = tempClient.channels.cache.get(DESIRED_CHANNEL_ID_2);
+    testChannel = tempClient.channels.cache.get(TEST_CHANNEL_ID);
+
 }
 
 function isFromWeatherNews(author_id) {
     switch (author_id) {
         case "713252858913632256":
         case "712914636203433984":
-        case "3269123629":
+        // case "3269123629":
             return true;
     }
     return false;
