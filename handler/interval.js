@@ -1,5 +1,5 @@
 const TEST_CHANNEL_ID = process.env.TEST_CHANNEL_ID;
-const DESIRED_CHANNEL_ID = process.env.DESIRED_CHANNEL_ID;
+const DESIRED_CHANNEL_ID_2 = process.env.DESIRED_CHANNEL_ID_2;
 
 const HOUR_IN_MILLISECOND = 1000 * 60 * 60;
 const DELAY_TIME_IN_HOUR = 5;
@@ -16,7 +16,7 @@ function setCheckLive(client) {
     console.log('Live checking initalizing');
 
     const timetableCommand = client.commands.get('timetable');
-    const checkLiveChannel = client.channels.cache.get(DESIRED_CHANNEL_ID); // replace args inside for TEST_CHANNEL_ID
+    const checkLiveChannel = client.channels.cache.get(DESIRED_CHANNEL_ID_2); // replace args inside for TEST_CHANNEL_ID
 
     // ground live checking until a full hour
     setTimeout(function() {
@@ -35,14 +35,14 @@ function setCheckLiveInterval(client, checkLiveChannel, timetableCommand) {
         if(timetableCommand.checkLiveInRepeat(checkLiveChannel, 'hiyama')) {
             console.log(`Sayacchi is online, delaying live checking for another ${ DELAY_TIME_IN_HOUR } hours`);
             delayCheckLive(client);         
-        }   
+        }
     }, 1 * HOUR_IN_MILLISECOND);
 }
 
 function delayCheckLive(client) {
     clearInterval(checkLiveInterval);
     setTimeout(function() {
-        setCheckLive(client);
+        setCheckLiveInterval(client);
     }, DELAY_TIME_IN_HOUR * HOUR_IN_MILLISECOND);
 }
 
