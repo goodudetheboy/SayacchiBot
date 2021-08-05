@@ -139,7 +139,9 @@ function streamConnect(retryAttempt) {
     stream.on('data', data => {
         try {
             const json = JSON.parse(data);
-            sendTweet(json);
+            if (json['includes'] !== undefined) {
+                sendTweet(json);
+            }
             // A successful connection resets retry count.
             retryAttempt = 0;
         } catch (e) {
