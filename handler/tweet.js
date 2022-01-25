@@ -63,6 +63,8 @@ const rules = [{
         'value': 'from:wni_live' // 713252858913632256
     }, {
         'value': 'from:wni_jp' // 712914636203433984
+    }, {
+        'value': 'from:rinon_ohshima'
     }
 ];
 
